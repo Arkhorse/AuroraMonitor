@@ -5,7 +5,7 @@
     {
         private static void Postfix()
         {
-            GearMessage.AddMessage("ico_journal", "Aurora Monitor", $"Next Weather Set: {GameManager.GetWeatherComponent().GetWeatherStage()}", 15f, false, true);
+            Utilities.AuroraMonitorMessage($"Next Weather: {GameManager.GetWeatherComponent().GetWeatherStage()}", Settings.Instance.WeatherStageNotificationTime);
         }
     }
 }

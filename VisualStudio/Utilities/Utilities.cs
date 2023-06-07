@@ -36,25 +36,19 @@ namespace AuroraMonitor
 
         // Aurora Monitor Utils
 
-        public static void AuroraMonitorMessage(string message, bool log = false)
+        public static void AuroraMonitorMessage(string message, float messageTime, bool log = false)
         {
             if (message == null)            return;
             if (AuroraMonitor.AuroraActive) return;
             AuroraMonitor.AuroraActive = true;
             if (log) Log($"Aurora {message}");
-            GearMessage.AddMessage("ico_journal", "Aurora Monitor", $"Aurora {message}", 15f, false, true);
+            GearMessage.AddMessage("ico_journal", "Aurora Monitor", $"{message}", messageTime, false, true);
         }
 
         public static void UpdateAuroraColor()
         {
-            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
-            {
-                GameManager.GetAuroraManager().SetCinematicColours(true);
-            }
-            else
-            {
-                GameManager.GetAuroraManager().SetCinematicColours(false);
-            }
+            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic) GameManager.GetAuroraManager().SetCinematicColours(true);
+            else GameManager.GetAuroraManager().SetCinematicColours(false);
         }
     }
 }

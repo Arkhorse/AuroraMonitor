@@ -14,8 +14,8 @@
   <!-- List of used references -->
   <ItemGroup>
 		<!-- This is the base reference. MUST EXIST -->
-        <PackageReference Include="STBlade.Modding.TLD.Il2CppAssemblies.Windows" Version="2.10.0" />
-        <PackageReference Include="STBlade.Modding.TLD.ModSettings"               Version="1.9.0"/>
+        <PackageReference Include="STBlade.Modding.TLD.Il2CppAssemblies.Windows" Version="2.17.0" />
+        <PackageReference Include="STBlade.Modding.TLD.ModSettings" Version="1.9.0" />
   </ItemGroup>
 
   <!-- Most commonly used using's. Add to this so you dont need to define them in the cs files -->
@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <TheLongDarkPath>O:\Steam\steamapps\common\TheLongDark</TheLongDarkPath> <!-- This should point to wherever your games primary EXE is -->
+    <TheLongDarkPath>P:\Steam\steamapps\common\TheLongDark</TheLongDarkPath> <!-- This should point to wherever your games primary EXE is -->
   </PropertyGroup>
 
   <PropertyGroup>

@@ -3,9 +3,11 @@ namespace AuroraMonitor
     internal class Main : MelonMod
     {
         // This is used to init the mod. If you have no settings or other dependent mods, this method is not needed
-        public static bool AuroraActive;
+        public static bool AuroraActive { get; set; }
+        public Main Instance { get; set; }
         public override void OnInitializeMelon()
         {
+            Instance = this;
             Settings.OnLoad();
             RegisterCommands();
 #if DEBUG
@@ -16,10 +18,12 @@ namespace AuroraMonitor
         // Needed because its always set to false on scene change
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return; // mod not usable in challenges
             if (sceneName.Contains("SANDBOX"))
             {
-                GameManager.GetAuroraManager().SetCinematicColours(Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic);
+                if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+                {
+                    GameManager.GetAuroraManager().SetCinematicColours(Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic);
+                }
             }
             base.OnSceneWasLoaded(buildIndex, sceneName);
         }
@@ -84,7 +88,7 @@ namespace AuroraMonitor
 
             Logger.LogSeperator();
 
-            //Utilities.Log($"");
+            //Logger.Log($"");
         }
 
         internal static void ForceUpdate()

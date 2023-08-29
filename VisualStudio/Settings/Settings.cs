@@ -23,6 +23,18 @@ namespace AuroraMonitor
         [Description("Currently an unknown option")]
         public bool BoostAurora             = false;
 
+        [Section("Aurora Probability")]
+
+        [Name("Aurora Early Chance")]
+        [Description("Change this to change how likely an Aurora will happen")]
+        [Slider(0, 100)]
+        public int AuroraEarlyWindowProb    = 20;
+
+        [Name("Aurora Late Chance")]
+        [Description("Change this to change how likely an Aurora will happen")]
+        [Slider(0, 100)]
+        public int AuroraLateWindowProb     = 10;
+
         [Section("Notifications")]
 
         [Name("Aurora Notification Time")]
@@ -139,6 +151,7 @@ namespace AuroraMonitor
         {
             Instance.AddToModSettings($"{BuildInfo.Name}");
             Instance.RefreshFields();
+            Instance.RefreshGUI();
         }
     }
 }

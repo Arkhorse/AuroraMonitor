@@ -16,6 +16,7 @@ namespace AuroraMonitor
         // Needed because its always set to false on scene change
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
+            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return; // mod not usable in challenges
             if (sceneName.Contains("SANDBOX"))
             {
                 GameManager.GetAuroraManager().SetCinematicColours(Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic);

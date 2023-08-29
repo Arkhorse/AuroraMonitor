@@ -5,11 +5,13 @@
     {
         private static bool Prefix()
         {
+            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return true; // mod not usable in challenges
             return false;
         }
 
         private static void Postfix(ref Color __result)
         {
+            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return; // mod not usable in challenges
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
             if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Default) || Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
             {
@@ -44,6 +46,7 @@
     {
         private static bool Prefix()
         {
+            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return true; // mod not usable in challenges
             return false;
         }
         private static void Postfix(InteriorLightingManager __instance, ref Color __result)

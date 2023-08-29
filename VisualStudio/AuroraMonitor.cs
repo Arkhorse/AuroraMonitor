@@ -1,6 +1,6 @@
 namespace AuroraMonitor
 {
-    internal class AuroraMonitor : MelonMod
+    internal class Main : MelonMod
     {
         // This is used to init the mod. If you have no settings or other dependent mods, this method is not needed
         public static bool AuroraActive;
@@ -9,7 +9,7 @@ namespace AuroraMonitor
             Settings.OnLoad();
             RegisterCommands();
 #if DEBUG
-            Utilities.Log($"Mod has loaded with version: {BuildInfo.Version}");
+            Logger.Log($"Mod has loaded with version: {BuildInfo.Version}");
 #endif
         }
 
@@ -29,7 +29,7 @@ namespace AuroraMonitor
         /// </summary>
         internal static void FetchAuroraTime()
         {
-            Utilities.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}");
+            Logger.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}");
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace AuroraMonitor
         internal static void FetchAuroraColour()
         {
             Color AuroraColor = GameManager.GetAuroraManager().GetAuroraColour();
-            Utilities.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
+            Logger.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
         }
         
         /// <summary>
@@ -62,27 +62,27 @@ namespace AuroraMonitor
 
             float secondsSinceLastChange    = uniStorm.m_SecondsSinceLastWeatherChange;
 
-            Utilities.LogSeperator();
+            Logger.LogSeperator();
 
-            Utilities.Log($"Current Day:                    {uniStorm.GetDayNumber()}");
-            Utilities.Log($"Current Weather:                {uniStorm.GetWeatherStage()}");
-            Utilities.Log($"Time Since Last Change:         {secondsSinceLastChange}");
+            Logger.Log($"Current Day:                    {uniStorm.GetDayNumber()}");
+            Logger.Log($"Current Weather:                {uniStorm.GetWeatherStage()}");
+            Logger.Log($"Time Since Last Change:         {secondsSinceLastChange}");
 
-            Utilities.Log($"Aurora Early Chance:            {weatherComponent.m_AuroraEarlyWindowProbability}");
-            Utilities.Log($"Aurora Late Chance:             {weatherComponent.m_AuroraLateWindowProbability}");
+            Logger.Log($"Aurora Early Chance:            {weatherComponent.m_AuroraEarlyWindowProbability}");
+            Logger.Log($"Aurora Late Chance:             {weatherComponent.m_AuroraLateWindowProbability}");
 
-            Utilities.Log($"cinematicColours:               {cinematicColours}");
-            Utilities.Log($"numFramesNotActive:             {numFramesNotActive}");
-            Utilities.Log($"forcedAuroraNext:               {forcedAuroraNext}");
-            Utilities.Log($"numAuroraSave:                  {numAuroraSave}");
-            Utilities.Log($"started:                        {started}");
-            Utilities.Log($"fullystarted:                   {fullystarted}");
-            Utilities.Log($"boosted:                        {boosted}");
-            Utilities.Log($"AuroraActive:                   {AuroraMonitor.AuroraActive}");
+            Logger.Log($"cinematicColours:               {cinematicColours}");
+            Logger.Log($"numFramesNotActive:             {numFramesNotActive}");
+            Logger.Log($"forcedAuroraNext:               {forcedAuroraNext}");
+            Logger.Log($"numAuroraSave:                  {numAuroraSave}");
+            Logger.Log($"started:                        {started}");
+            Logger.Log($"fullystarted:                   {fullystarted}");
+            Logger.Log($"boosted:                        {boosted}");
+            Logger.Log($"AuroraActive:                   {Main.AuroraActive}");
 
             FetchAuroraColour();
 
-            Utilities.LogSeperator();
+            Logger.LogSeperator();
 
             //Utilities.Log($"");
         }

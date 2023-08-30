@@ -123,7 +123,7 @@ namespace AuroraMonitor
             }
             if (Instance.PRINTDEBUG)
             {
-                AuroraMonitor.PrintDebugInfo();
+                Main.PrintDebugInfo();
                 Instance.PRINTDEBUG = false;
             }
             Utilities.UpdateAuroraColor();
@@ -149,7 +149,7 @@ namespace AuroraMonitor
         // This is used to load the settings
         internal static void OnLoad()
         {
-            Instance.AddToModSettings($"{BuildInfo.Name}");
+            Instance.AddToModSettings(BuildInfo.GUIName);
             Instance.RefreshFields();
             Instance.RefreshGUI();
         }

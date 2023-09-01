@@ -19,6 +19,10 @@ namespace AuroraMonitor
         [Description("Enable this to print debug data to the Melon Log when you click confirm. This can also be done using \"AuroraMonitorDebug\" in the Console")]
         public bool PRINTDEBUG = false;
 
+        [Name("Print to log when messages are sent")]
+        [Description("When AuroraMonitor attempts to send a message, this will print that message to the log as well")]
+        public bool PRINTDEBUGLOG = false;
+
         [Name("Boost Aurora")]
         [Description("Currently an unknown option")]
         public bool BoostAurora             = false;
@@ -89,7 +93,7 @@ namespace AuroraMonitor
 
         [Name("Alpha")]
         [Slider(0f, 1f)]
-        [Description("Alpha refers to brightness")]
+        [Description("Alpha refers to brightness but is also used to control how visible the aurora is. You shouldnt touch this")]
         public float AuroraColour_A         = 0f;
 
         [Name("Normalize Alpha")]

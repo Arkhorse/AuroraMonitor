@@ -3,9 +3,31 @@ namespace AuroraMonitor
     internal class Main : MelonMod
     {
         // This is used to init the mod. If you have no settings or other dependent mods, this method is not needed
-        public static bool AuroraActive { get; set; }
-        public Main Instance { get; set; }
+        public static bool AuroraActive;
         public override void OnInitializeMelon()
+=======
+        public static bool AuroraActive { get; set; }
+        public Main? Instance { get; set; }
+        public WeatherStage SavedStage { get; set; }
+        public static string? GetCurrentWeatherLoc { get; } = GameManager.GetWeatherComponent().GetWeatherStage() switch
+        {
+            WeatherStage.DenseFog           => "GAMEPLAY_WeatherHeavyFog",
+            WeatherStage.LightSnow          => "GAMEPLAY_WeatherLightSnow",
+            WeatherStage.HeavySnow          => "GAMEPLAY_WeatherHeavySnow",
+            WeatherStage.PartlyCloudy       => "GAMEPLAY_PartlyCloudy",
+            WeatherStage.Clear              => "GAMEPLAY_WeatherClear",
+            WeatherStage.Cloudy             => "GAMEPLAY_Cloudy",
+            WeatherStage.LightFog           => "GAMEPLAY_WeatherLightFog",
+            WeatherStage.Blizzard           => "GAMEPLAY_WeatherBlizzard",
+            WeatherStage.ClearAurora        => "GAMEPLAY_know_th_AuroraObservations1_Title",    // Aurora Borealis
+            WeatherStage.ToxicFog           => "GAMEPLAY_AfflictionToxicFog",                   // Toxic Fog - only darkwalker challenge as of 2.22
+            WeatherStage.ElectrostaticFog   => "GAMEPLAY_ElectrostaticFog",                     // Glimmer Fog
+            WeatherStage.Undefined          => null,
+            _ => null,
+        };
+
+    public override void OnInitializeMelon()
+>>>>>>> Stashed changes
         {
             Instance = this;
             Settings.OnLoad();
@@ -20,12 +42,47 @@ namespace AuroraMonitor
         {
             if (sceneName.Contains("SANDBOX"))
             {
+<<<<<<< Updated upstream
+                GameManager.GetAuroraManager().SetCinematicColours(Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic);
+=======
                 if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
                 {
                     GameManager.GetAuroraManager().SetCinematicColours(Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic);
                 }
+
+                if (GameManager.GetUniStorm())
+                {
+                    ShowWeatherAlert();
+                    //SavedStage = GameManager.GetUniStorm().GetWeatherStage();
+                }
+>>>>>>> Stashed changes
             }
             base.OnSceneWasLoaded(buildIndex, sceneName);
+        }
+
+        //public override void OnLateUpdate()
+        //{
+        //    base.OnLateUpdate();
+
+        //    if (SavedStage != GameManager.GetUniStorm().GetWeatherStage())
+        //    {
+        //        if (GameManager.GetVpFPSPlayer() && !InterfaceManager.IsOverlayActiveCached())
+        //        {
+        //            Utilities.AuroraMonitorMessage($"Weather Update: {Localization.Get(GetCurrentWeatherLoc)}", Settings.Instance.WeatherStageNotificationTime);
+
+        //            SavedStage = GameManager.GetUniStorm().GetWeatherStage();
+        //        }
+        //    }
+        //}
+
+        public static void ShowNewWeatherAlert()
+        {
+            Utilities.AuroraMonitorMessage($"Weather Update: {Localization.Get(GetCurrentWeatherLoc)}", Settings.Instance.WeatherStageNotificationTime);
+        }
+
+        public static void ShowWeatherAlert()
+        {
+            Utilities.AuroraMonitorMessage($"Weather: {Localization.Get(GetCurrentWeatherLoc)}", Settings.Instance.WeatherStageNotificationTime);
         }
 
         /// <summary>
@@ -54,6 +111,7 @@ namespace AuroraMonitor
             WeatherTransition weather       = GameManager.GetWeatherTransitionComponent();
             UniStormWeatherSystem uniStorm  = GameManager.GetUniStorm();
             AuroraManager auroraManager     = GameManager.GetAuroraManager();
+            Wind wind                       = GameManager.GetWindComponent();
 
             float alpha                     = auroraManager.GetNormalizedAlpha();
             bool cinematicColours           = auroraManager.IsUsingCinematicColours();
@@ -83,6 +141,8 @@ namespace AuroraMonitor
             Logger.Log($"fullystarted:                   {fullystarted}");
             Logger.Log($"boosted:                        {boosted}");
             Logger.Log($"AuroraActive:                   {Main.AuroraActive}");
+
+            Utilities.Log($"Wind Speed: {wind.GetSpeedMPH}");
 
             FetchAuroraColour();
 

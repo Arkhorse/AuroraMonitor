@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 *.ini
 .vs/AuroraMonitor/v17/.suo
+*.v2

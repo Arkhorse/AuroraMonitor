@@ -1,39 +1,28 @@
-using System.Diagnostics.CodeAnalysis;
-
-namespace AuroraMonitor
+namespace AuroraMonitor.Utilities
 {
     internal class Utilities
     {
-        public static void AuroraMonitorMessage(string message, float messageTime, bool log = false)
+        /// <summary>
+        /// Used to fetch aurora colour
+        /// </summary>
+        internal static void FetchAuroraColour()
         {
-            if (message == null)            return;
-            if (Main.AuroraActive) return;
-            Main.AuroraActive = true;
-            if (log) Logger.Log($"Aurora {message}");
-            GearMessage.AddMessage("ico_journal", "Aurora Monitor", $"{message}", messageTime, false, true);
-=======
-        public static void AuroraMonitorMessage(string message, float messageTime)
-        {
-            if (message == null)            return;
-            if (Main.AuroraActive) return;
-            Main.AuroraActive = true;
-            if (Settings.Instance.PRINTDEBUGLOG) Logger.Log($"Aurora {message}");
-
-            //GearMessage.GearMessageInfo AuroraGearMessage = new("ico_journal", "Aurora Monitor", $"{message}")
-            //{
-            //    m_DisplayTime = messageTime
-            //};
-
-            //GearMessage.AddMessageToQueue(InterfaceManager.GetPanel<Panel_HUD>(), AuroraGearMessage, true);
-
-            GearMessage.AddMessage("ico_journal", "Aurora Monitor", $"{message}", messageTime);
->>>>>>> Stashed changes
+            Color AuroraColor = GameManager.GetAuroraManager().GetAuroraColour();
+            Logger.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
         }
 
         public static void UpdateAuroraColor()
         {
-            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic) GameManager.GetAuroraManager().SetCinematicColours(true);
+            if (AuroraSettings.Instance.AuroraColour == AuroraColourSettings.Cinematic) GameManager.GetAuroraManager().SetCinematicColours(true);
             else GameManager.GetAuroraManager().SetCinematicColours(false);
+        }
+
+        /// <summary>
+        /// Used to fetch aurora time. Currently not implemented
+        /// </summary>
+        internal static void FetchAuroraTime()
+        {
+            Logger.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}");
         }
     }
 }

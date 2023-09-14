@@ -13,19 +13,19 @@
         {
             if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return; // mod not usable in challenges
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
-            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Default) || Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && AuroraSettings.Instance.AuroraColour == AuroraColourSettings.Default) || AuroraSettings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
             {
                 __result = new Color(0.392156869f, 0.5882353f, 0.980392158f, 1f);
             }
-            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Custom)
+            if (AuroraSettings.Instance.AuroraColour == AuroraColourSettings.Custom)
             {
                 Color White = Color.white;
 
-                White.r = Settings.Instance.AuroraColour_R;
-                White.g = Settings.Instance.AuroraColour_G;
-                White.b = Settings.Instance.AuroraColour_B;
-                White.a = Settings.Instance.AuroraColour_A;
-                if (Settings.Instance.AuroraColour_Normalize)
+                White.r = AuroraSettings.Instance.AuroraColour_R;
+                White.g = AuroraSettings.Instance.AuroraColour_G;
+                White.b = AuroraSettings.Instance.AuroraColour_B;
+                White.a = AuroraSettings.Instance.AuroraColour_A;
+                if (AuroraSettings.Instance.AuroraColour_Normalize)
                 {
                     White.a *= Mathf.Pow(normalizedAlpha, 2);
                 }
@@ -54,19 +54,19 @@
             Color auroraColour = GameManager.GetAuroraManager().GetAuroraColour();
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
 
-            if (GameManager.GetAuroraManager().IsUsingCinematicColours() || Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            if (GameManager.GetAuroraManager().IsUsingCinematicColours() || AuroraSettings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
             {
                 __result = auroraColour;
             }
-            else if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Custom)
+            else if (AuroraSettings.Instance.AuroraColour == AuroraColourSettings.Custom)
             {
                 Color White = Color.white;
 
-                White.r = Settings.Instance.AuroraColour_R;
-                White.g = Settings.Instance.AuroraColour_G;
-                White.b = Settings.Instance.AuroraColour_B;
-                White.a = Settings.Instance.AuroraColour_A;
-                if (Settings.Instance.AuroraColour_Normalize)
+                White.r = AuroraSettings.Instance.AuroraColour_R;
+                White.g = AuroraSettings.Instance.AuroraColour_G;
+                White.b = AuroraSettings.Instance.AuroraColour_B;
+                White.a = AuroraSettings.Instance.AuroraColour_A;
+                if (AuroraSettings.Instance.AuroraColour_Normalize)
                 {
                     White.a *= Mathf.Pow(normalizedAlpha, 2);
                 }

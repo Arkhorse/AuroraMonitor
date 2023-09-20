@@ -1,4 +1,4 @@
-﻿namespace AuroraMonitor
+﻿/*namespace AuroraMonitor
 {
     [HarmonyPatch(typeof(WeatherTransition), nameof(WeatherTransition.ChooseNextWeatherSet))]
     internal class WeatherTransition_ChooseNextWeatherSet
@@ -24,7 +24,8 @@
                 _ => null,
             };
             if (nextWeather == null) return;
-            Utilities.AuroraMonitorMessage($"Weather Update: {Localization.Get(nextWeather)}", Settings.Instance.WeatherStageNotificationTime);
+            Utilities.AuroraMonitorMessage($"Weather Update: {Localization.Get(nextWeather)}", Settings.Instance.WeatherNotificationsTime );
         }
     }
 }
+*/

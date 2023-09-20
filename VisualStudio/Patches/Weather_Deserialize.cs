@@ -1,4 +1,4 @@
-﻿namespace AuroraMonitor
+﻿/*namespace AuroraMonitor
 {
     [HarmonyPatch(typeof(WeatherTransition), nameof(WeatherTransition.Deserialize), new Type[] { typeof(string) })]
     public class WeatherTransition_Deserialize
@@ -12,3 +12,4 @@
         }
     }
 }
+*/

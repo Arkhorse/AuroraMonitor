@@ -54,9 +54,13 @@
             Color auroraColour = GameManager.GetAuroraManager().GetAuroraColour();
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
 
-            if (GameManager.GetAuroraManager().IsUsingCinematicColours() || Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            if (GameManager.GetAuroraManager().IsUsingCinematicColours())
             {
                 __result = auroraColour;
+            }
+            else if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            {
+                GameManager.GetAuroraManager().SetCinematicColours( true );
             }
             else if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Custom)
             {

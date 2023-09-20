@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AuroraMonitor
 {
-    internal class Utilities
+/*    internal class Utilities
     {
         public static void AuroraMonitorMessage(string message, float messageTime, bool log = false)
         {
@@ -13,10 +13,6 @@ namespace AuroraMonitor
             GearMessage.AddMessage("ico_journal", "Aurora Monitor", $"{message}", messageTime, false, true);
         }
 
-        public static void UpdateAuroraColor()
-        {
-            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic) GameManager.GetAuroraManager().SetCinematicColours(true);
-            else GameManager.GetAuroraManager().SetCinematicColours(false);
-        }
-    }
+
+    }*/
 }

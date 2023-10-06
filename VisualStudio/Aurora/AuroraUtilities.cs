@@ -25,18 +25,18 @@ namespace AuroraMonitor.Aurora
             Logging.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
         }
 
-		public static void SetAuroraChancesEarly( int early )
+		public static void SetAuroraChancesEarly(Weather weather, int early )
 		{
-			GameManager.GetWeatherComponent().m_AuroraEarlyWindowProbability = early;
+			weather.m_AuroraEarlyWindowProbability = early;
 		}
-		public static void SetAuroraChancesLate( int late )
+		public static void SetAuroraChancesLate( Weather weather, int late )
 		{
-			GameManager.GetWeatherComponent().m_AuroraLateWindowProbability = late;
+			weather.m_AuroraLateWindowProbability = late;
 		}
-		public static void SetAuroraChances( int early, int late )
+		public static void SetAuroraChances( Weather weather, int early, int late )
 		{
-			GameManager.GetWeatherComponent().m_AuroraEarlyWindowProbability = early;
-			GameManager.GetWeatherComponent().m_AuroraLateWindowProbability = late;
+			weather.m_AuroraEarlyWindowProbability = early;
+			weather.m_AuroraLateWindowProbability = late;
 		}
 	}
 }

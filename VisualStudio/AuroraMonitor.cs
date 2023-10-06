@@ -23,7 +23,7 @@ namespace AuroraMonitor
             ConsoleCommands.RegisterCommands();
             if (Settings.Instance.PRINTDEBUGLOG)
             {
-                Logger.LogStarter();
+                Logging.LogStarter();
             }
         }
 

@@ -13,7 +13,7 @@ namespace AuroraMonitor.Aurora
 		/// </summary>
 		internal static void FetchAuroraTime()
         {
-            Logger.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}");
+            Logging.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}");
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace AuroraMonitor.Aurora
         internal static void FetchAuroraColour()
         {
             Color AuroraColor = GameManager.GetAuroraManager().GetAuroraColour();
-            Logger.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
+            Logging.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
         }
 
 		public static void SetAuroraChancesEarly( int early )

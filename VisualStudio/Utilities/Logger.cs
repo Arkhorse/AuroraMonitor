@@ -1,6 +1,6 @@
-namespace AuroraMonitor
+namespace AuroraMonitor.Utilities
 {
-    public class Logger
+    public class Logging
     {
         public static void Log(string message, params object[] parameters) => Melon<Main>.Logger.Msg($"{message}", parameters);
         public static void LogWarning(string message, params object[] parameters) => Melon<Main>.Logger.Warning($"{message}", parameters);

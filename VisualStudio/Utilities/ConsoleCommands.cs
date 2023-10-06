@@ -27,55 +27,60 @@
 
             float secondsSinceLastChange            = uniStorm.m_SecondsSinceLastWeatherChange;
 
-            Logger.LogSeperator();
+			Logging.LogSeperator();
 
-            Logger.Log($"Current Day:                       {uniStorm.GetDayNumber()}");
-            Logger.Log( $"Time of day:                      h:{time.GetHour()}m:{time.GetMinutes()}" );
+			Logging.LogIntraSeparator( "Time Information" );
 
-            Logger.LogIntraSeparator("Weather Information");
+			Logging.Log($"Current Day:                       {uniStorm.GetDayNumber()}");
+			Logging.Log( $"Time of day:                      {time.GetHour()}h:{time.GetMinutes()}m" );
 
-            Logger.Log($"Previous Weather:                  {WeatherUtilities.Prev}");
-            Logger.Log($"UniStorm Previous Weather:         {uniStorm.m_PreviousWeatherStage}");
-            Logger.Log($"Current Weather:                   {uniStorm.GetWeatherStage()}");
-            Logger.Log($"GetCurrentWeatherLoc:              {WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm())}");
-            Logger.Log($"   Result:                         {Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()))}");
-            Logger.Log($"GetCurrentWeatherIcon:             {WeatherUtilities.GetCurrentWeatherIcon(GameManager.GetUniStorm())}");
+			Logging.LogIntraSeparator("Weather Information");
 
-            Logger.LogIntraSeparator("Wind Information");
+			Logging.Log($"Previous Weather:                  {Main.MonitorData.Prev}");
+			Logging.Log($"UniStorm Previous Weather:         {uniStorm.m_PreviousWeatherStage}");
+			Logging.Log($"Current Weather:                   {uniStorm.GetWeatherStage()}");
+			Logging.Log($"GetCurrentWeatherLoc:              {WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm())}");
+			Logging.Log($"\tResult:                          {Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()))}");
+			Logging.Log($"GetCurrentWeatherIcon:             {WeatherUtilities.GetCurrentWeatherIcon(GameManager.GetUniStorm())}");
 
-            Logger.Log($"Wind Speed:                        {wind.GetSpeedMPH()}");
-            Logger.Log($"Wind angle:                        {wind.GetWindAngleRelativeToPlayer()}");
-            Logger.Log($"Wind Direction:                    {WeatherUtilities.GetWindDirection()}");
-            Logger.Log($"Wind Mult:                         {GameManager.GetPlayerMovementComponent().GetWindMovementMultiplier()}");
+			//PrintSavedWeatherData();
 
-            Logger.LogIntraSeparator("Aurora Information");
+			Logging.LogIntraSeparator("Wind Information");
 
-            Logger.Log($"Time Since Last Change:            {secondsSinceLastChange}s");
-            Logger.Log($"Aurora Early Chance:               {weatherComponent.m_AuroraEarlyWindowProbability}");
-            Logger.Log($"Aurora Late Chance:                {weatherComponent.m_AuroraLateWindowProbability}");
+			Logging.Log($"Wind Speed:                        {wind.GetSpeedMPH()}");
+			Logging.Log($"Wind angle:                        {wind.GetWindAngleRelativeToPlayer()}");
+			Logging.Log($"Wind Direction:                    {WeatherUtilities.GetWindDirection()}");
+			Logging.Log($"Wind Mult:                         {GameManager.GetPlayerMovementComponent().GetWindMovementMultiplier()}");
 
-            Logger.Log($"cinematicColours:                  {cinematicColours}");
-            Logger.Log($"numFramesNotActive:                {numFramesNotActive}");
-            Logger.Log($"forcedAuroraNext:                  {forcedAuroraNext}");
-            Logger.Log($"numAuroraSave:                     {numAuroraSave}");
-            Logger.Log($"started:                           {started}");
-            Logger.Log($"fullystarted:                      {fullystarted}");
-            Logger.Log($"boosted:                           {boosted}");
-            AuroraUtilities.FetchAuroraColour();
+			Logging.LogIntraSeparator("Aurora Information");
 
-            Logger.LogIntraSeparator("Extra Debug Data");
 
-            Logger.Log($"BaseLoaded:                        {Main.BaseLoaded}");
-            Logger.Log($"SandboxLoaded:                     {Main.SandboxLoaded}");
-            Logger.Log($"DLC01Loaded:                       {Main.DLC01Loaded}");
-            Logger.Log($"Current Scene:                     {GameManager.m_ActiveScene}");
-            Logger.Log($"BaseSceneName:                     {Main.BaseSceneName}");
-            Logger.Log($"SandboxSceneName:                  {Main.SandboxSceneName}");
-            Logger.Log($"DLC01SceneName:                    {Main.DLC01SceneName}");
+			Logging.Log( $"Time since last Aurora:          {(int)daysSincLastChange}:{(int)hoursSinceLastChange}:{(int)minutesSinceLastChange}:{secondsSinceLastChange}" );
+			Logging.Log($"Aurora Early Chance:               {GameManager.GetWeatherComponent().m_AuroraEarlyWindowProbability}");
+			Logging.Log($"Aurora Late Chance:                {GameManager.GetWeatherComponent().m_AuroraLateWindowProbability}");
 
-            Logger.LogSeperator();
+			Logging.Log($"cinematicColours:                  {cinematicColours}");
+			Logging.Log($"numFramesNotActive:                {numFramesNotActive}");
+			Logging.Log($"forcedAuroraNext:                  {forcedAuroraNext}");
+			Logging.Log($"numAuroraSave:                     {numAuroraSave}");
+			Logging.Log($"started:                           {started}");
+			Logging.Log($"fullystarted:                      {fullystarted}");
+			Logging.Log($"boosted:                           {boosted}");
 
-            //Logger.Log($"");
+			Logging.LogIntraSeparator("Extra Debug Data");
+
+			Logging.Log($"BaseLoaded:                        {Main.BaseLoaded}");
+			Logging.Log($"SandboxLoaded:                     {Main.SandboxLoaded}");
+			Logging.Log($"DLC01Loaded:                       {Main.DLC01Loaded}");
+			Logging.Log($"Current Scene:                     {GameManager.m_ActiveScene}");
+			Logging.Log($"BaseSceneName:                     {Main.BaseSceneName}");
+			Logging.Log($"SandboxSceneName:                  {Main.SandboxSceneName}");
+			Logging.Log($"DLC01SceneName:                    {Main.DLC01SceneName}");
+
+			Logging.LogSeperator();
+
+			//Logging.Log($"");
+		}
         }
 
         public static void TriggerMessage()

@@ -9,7 +9,7 @@ namespace AuroraMonitor
             if (message == null)            return;
             if (Main.AuroraActive) return;
             Main.AuroraActive = true;
-            if (log) Logger.Log($"Aurora {message}");
+            if (log) Logging.Log($"Aurora {message}");
             GearMessage.AddMessage("ico_journal", "Aurora Monitor", $"{message}", messageTime, false, true);
         }
 

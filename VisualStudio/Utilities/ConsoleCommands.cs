@@ -1,31 +1,46 @@
 ﻿namespace AuroraMonitor
 {
-    internal class ConsoleCommands
-    {
-        /// <summary>
-        /// Prints all debug info to the MelonLog
-        /// </summary>
-        internal static void PrintDebugInfo()
-        {
-            Il2Cpp.Weather weatherComponent         = GameManager.GetWeatherComponent();
-            WeatherTransition weather               = GameManager.GetWeatherTransitionComponent();
-            UniStormWeatherSystem uniStorm          = GameManager.GetUniStorm();
-            AuroraManager auroraManager             = GameManager.GetAuroraManager();
-            Wind wind                               = GameManager.GetWindComponent();
-            TimeOfDay time                          = GameManager.GetTimeOfDayComponent();
+	internal class ConsoleCommands
+	{
+		//private static void PrintSavedWeatherData()
+		//{
+		//	Main.Load();
+		//	if (Main.MonitorData.PreviousStages.Count() == 0 ) return;
+		//	Logging.Log( "Previous Weather:" );
+		//	var stagecopy = Main.MonitorData.PreviousStages;
+		//	stagecopy.Reverse();
+		//	foreach ( WeatherStage stage in stagecopy )
+		//	{
+		//		Logging.Log( $"\t{stage}" );
+		//	}
+		//}
+		/// <summary>
+		/// Prints all debug info to the MelonLog
+		/// </summary>
+		internal static void PrintDebugInfo()
+		{
+			Weather weatherComponent                = GameManager.GetWeatherComponent();
+			WeatherTransition weather               = GameManager.GetWeatherTransitionComponent();
+			UniStormWeatherSystem uniStorm          = GameManager.GetUniStorm();
+			AuroraManager auroraManager             = GameManager.GetAuroraManager();
+			Wind wind                               = GameManager.GetWindComponent();
+			TimeOfDay time                          = GameManager.GetTimeOfDayComponent();
 
 
 			float alpha                             = auroraManager.GetNormalizedAlpha();
-            bool cinematicColours                   = auroraManager.IsUsingCinematicColours();
-            int numFramesNotActive                  = auroraManager.m_NumFramesNotActive;
-            bool forcedAuroraNext                   = auroraManager.m_ForceAuroraNextOpportunity;
-            int numAuroraSave                       = auroraManager.m_NumAurorasForSave;
-            bool started                            = auroraManager.AuroraIsActive();
-            bool fullystarted                       = auroraManager.IsFullyActive();
-            bool boosted                            = auroraManager.IsAuroraBoostEnabled();
-            //int temperature                       = uniStorm.m_Temperature;
+			bool cinematicColours                   = auroraManager.IsUsingCinematicColours();
+			int numFramesNotActive                  = auroraManager.m_NumFramesNotActive;
+			bool forcedAuroraNext                   = auroraManager.m_ForceAuroraNextOpportunity;
+			int numAuroraSave                       = auroraManager.m_NumAurorasForSave;
+			bool started                            = auroraManager.AuroraIsActive();
+			bool fullystarted                       = auroraManager.m_IsElectrolizerActive;
+			bool boosted                            = auroraManager.IsAuroraBoostEnabled();
+			//int temperature                       = uniStorm.m_Temperature;
 
-            float secondsSinceLastChange            = uniStorm.m_SecondsSinceLastWeatherChange;
+			float secondsSinceLastChange            = uniStorm.m_SecondsSinceLastWeatherChange;
+			float daysSincLastChange                = secondsSinceLastChange / 86400;
+			float hoursSinceLastChange              = secondsSinceLastChange / 1440;
+			float minutesSinceLastChange            = secondsSinceLastChange / 60;
 
 			Logging.LogSeperator();
 
@@ -66,6 +81,7 @@
 			Logging.Log($"started:                           {started}");
 			Logging.Log($"fullystarted:                      {fullystarted}");
 			Logging.Log($"boosted:                           {boosted}");
+			AuroraUtilities.FetchAuroraColour();
 
 			Logging.LogIntraSeparator("Extra Debug Data");
 
@@ -81,40 +97,32 @@
 
 			//Logging.Log($"");
 		}
-        }
 
-        public static void TriggerMessage()
-        {
-            WeatherNotifications.MaybeDisplayWeatherNotification(true);
-        }
+		public static void ForceDisplay()
+		{
+			WeatherNotifications.MaybeDisplayWeatherNotification();
+		}
 
-        public static void ForceUpdateNotifications()
-        {
-			WeatherNotifications.MaybeDisplayWeatherNotification(true);
-            uConsole.Log("Triggered update");
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		internal static void RegisterCommands()
+		{
+			uConsole.RegisterCommand("get_aurora_color", new Action( AuroraUtilities.FetchAuroraColour));
+			uConsole.RegisterCommand("get_aurora_time", new Action( AuroraUtilities.FetchAuroraTime));
+			uConsole.RegisterCommand("AuroraMonitorDebug", new Action(PrintDebugInfo));
+			uConsole.RegisterCommand("ForceDisplay", new Action(ForceDisplay));
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        internal static void RegisterCommands()
-        {
-            uConsole.RegisterCommand("get_aurora_color", new Action( AuroraUtilities.FetchAuroraColour));
-            uConsole.RegisterCommand("get_aurora_time", new Action( AuroraUtilities.FetchAuroraTime));
-            uConsole.RegisterCommand("AuroraMonitorDebug", new Action(PrintDebugInfo));
-            uConsole.RegisterCommand("TriggerMessage", new Action(TriggerMessage));
-            uConsole.RegisterCommand("ForceUpdateNotifications", new Action(ForceUpdateNotifications));
-
+		/// <summary>
+		/// 
+		/// </summary>
+		internal static void UnRegisterCommands()
+		{
+			uConsole.UnRegisterCommand("get_aurora_color");
+			uConsole.UnRegisterCommand("get_aurora_time");
+			uConsole.UnRegisterCommand("AuroraMonitorDebug");
+            uConsole.UnRegisterCommand("ForceDisplay");
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal static void UnRegisterCommands()
-        {
-            uConsole.UnRegisterCommand("get_aurora_color");
-            uConsole.UnRegisterCommand("get_aurora_time");
-            uConsole.UnRegisterCommand("AuroraMonitorDebug");
-        }
-    }
+	}
 }

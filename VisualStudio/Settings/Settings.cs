@@ -135,19 +135,7 @@ namespace AuroraMonitor
 
 		protected override void OnConfirm()
 		{
-			if (Instance.BoostAurora && !GameManager.GetAuroraManager().IsAuroraBoostEnabled())
-			{
-				GameManager.GetAuroraManager().BoostAurora(true);
-			}
-			if (Instance.forceNextAurora)
-			{
-				GameManager.GetAuroraManager().ForceAuroraNextOpportunity(Instance.forceEarly, Instance.forceLate, Instance.forceDurationTime);
-			}
-			if (Instance.PRINTDEBUG)
-			{
-				ConsoleCommands.PrintDebugInfo();
-				Instance.PRINTDEBUG = false;
-			}
+			Instance.OnLoadConfirm();
 			base.OnConfirm();
 		}
 
@@ -166,6 +154,28 @@ namespace AuroraMonitor
 			SetFieldVisible(nameof(AuroraColour_A),             Instance.AuroraColour == AuroraColourSettings.Custom);
 			SetFieldVisible(nameof(AuroraColour_Normalize),     Instance.AuroraColour == AuroraColourSettings.Custom);
 		}
+
+		public void OnLoadConfirm()
+		{
+			if (Instance.BoostAurora && !GameManager.GetAuroraManager().IsAuroraBoostEnabled())
+			{
+				GameManager.GetAuroraManager().BoostAurora(true);
+			}
+			if (Instance.forceNextAurora)
+			{
+				GameManager.GetAuroraManager().ForceAuroraNextOpportunity(Instance.forceEarly, Instance.forceLate, Instance.forceDurationTime);
+			}
+			if (Instance.PRINTDEBUG)
+			{
+				ConsoleCommands.PrintDebugInfo();
+				Instance.PRINTDEBUG = false;
+			}
+			if (Instance.AuroraColour == AuroraColourSettings.Cinematic)
+			{
+				GameManager.GetAuroraManager().SetCinematicColours(true);
+			}
+		}
+
 
 		// This is used to load the settings
 		internal static void OnLoad()

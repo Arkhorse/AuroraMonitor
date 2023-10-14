@@ -67,5 +67,22 @@
 
             return IsAdditiveScene;
         }
+
+        public static bool IsValidSceneForWeather(string sceneName)
+        {
+
+            bool flag = ((IsSceneBase(sceneName)) && !(IsSceneAdditive(sceneName)));
+
+            if (flag && !GameManager.GetWeatherComponent().IsIndoorScene())
+            {
+                return true;
+            }
+            else if (GameManager.GetWeatherComponent().IsIndoorScene() && Settings.Instance.WeatherNotificationsIndoors)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

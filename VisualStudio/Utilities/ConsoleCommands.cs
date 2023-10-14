@@ -51,7 +51,7 @@
 
 			Logging.LogIntraSeparator("Weather Information");
 
-			Logging.Log($"Previous Weather:                  {Main.MonitorData.Prev}");
+			Logging.Log($"Previous Weather:                  {Main.MonitorData!.Prev}");
 			Logging.Log($"UniStorm Previous Weather:         {uniStorm.m_PreviousWeatherStage}");
 			Logging.Log($"Current Weather:                   {uniStorm.GetWeatherStage()}");
 			Logging.Log($"GetCurrentWeatherLoc:              {WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm())}");

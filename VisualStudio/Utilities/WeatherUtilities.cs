@@ -1,4 +1,5 @@
 ﻿using AuroraMonitor.Notifications;
+using AuroraMonitor.Utilities.Enums;
 
 namespace AuroraMonitor.Utilities
 {
@@ -82,9 +83,9 @@ namespace AuroraMonitor.Utilities
 		{
 			return Settings.Instance.fogImages switch
 			{
-				Settings.ToxicFogImages.l1 => "ico_toxicFog_L1",
-				Settings.ToxicFogImages.l2 => "ico_toxicFog_L2",
-				Settings.ToxicFogImages.l3 => "ico_toxicFog_L3",
+				ToxicFogImages.l1 => "ico_toxicFog_L1",
+				ToxicFogImages.l2 => "ico_toxicFog_L2",
+				ToxicFogImages.l3 => "ico_toxicFog_L3",
 				_ => null
 			};
 		}
@@ -101,6 +102,8 @@ namespace AuroraMonitor.Utilities
 
 		public static void UpdateStages(WeatherStage current)
 		{
+			if (Main.MonitorData == null) return;
+
 			Main.MonitorData.Prev = current;
 		}
 
@@ -109,5 +112,52 @@ namespace AuroraMonitor.Utilities
 			Wind wind = GameManager.GetWindComponent();
 			return wind.m_CurrentDirection;
 		}
-	}
+
+        public static string GetDayString()
+        {
+            float result = GameManager.GetTimeOfDayComponent().GetHoursPlayedNotPaused() / 24f;
+            return result.ToString();
+        }
+
+        public static float GetCurrentUnits(float input)
+        {
+            return Settings.Instance.UnitsToUse switch
+            {
+                UnitUse.Metric => WeatherUtilities.ConvertMilesKilometerHour(input),
+                UnitUse.Scientific => WeatherUtilities.ConvertMilesMetersSecond(input),
+                _ => input
+            };
+        }
+
+        public static string GetCurrentUnitsString(int section)
+        {
+            if (section == 0)
+            {
+                return Settings.Instance.UnitsToUse switch
+                {
+                    UnitUse.Metric => "KM/H",
+                    UnitUse.Scientific => "M/S",
+                    _ => "MP/H"
+                };
+            }
+            else if (section == 1)
+            {
+                return Settings.Instance.FirstAidScreen_UnitsToUse switch
+                {
+                    UnitUse.Metric => "KM/H",
+                    UnitUse.Scientific => "M/S",
+                    _ => "MP/H"
+                };
+            }
+
+            return string.Empty;
+        }
+
+        public static int GetNormalizedSpeed(float input)
+        {
+            float num = GetCurrentUnits(input);
+            float num1 = Mathf.Ceil(num);
+            return (int)num1;
+        }
+    }
 }

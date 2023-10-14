@@ -5,6 +5,7 @@ namespace AuroraMonitor
 		internal static Settings Instance { get; } = new();
 
 		public enum AuroraColourSettings { Default, Cinematic, Custom };
+		public enum UnitUse { Metric, Scientific, Imperial }
 
 		/*
 			Cinematic #6496fa   : 0.392156869f, 0.5882353f, 0.980392158f, 1f
@@ -30,8 +31,8 @@ namespace AuroraMonitor
 		public bool PRINTDEBUGLOG = false;
 
 		[Name("Boost Aurora")]
-		[Description("Currently an unknown option")]
-		public bool BoostAurora             = false;
+		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
+		public bool BoostAurora = false;
 
 		[Section( "Aurora Probability" )]
 
@@ -45,18 +46,24 @@ namespace AuroraMonitor
 		[Slider( 0, 100 )]
 		public int AuroraChanceLate = 10;
 
-		[Name( "Remember choice" )]
-		[Description( "This makes the chances only save for the current game session when off" )]
-		public bool AuroraChanceRemember = false;
-
 		[Section( "Notifications" )]
 
-		[Name( "Weather Stage Time" )]
+        [Name("Units to use")]
+        [Description("Change this to change the displayed units")]
+        [Choice(new string[] { "KM/H", "M/S", "MP/H" })]
+        public UnitUse UnitsToUse = UnitUse.Metric;
+
+        [Name( "Weather Stage Time" )]
 		[Description( "Displays when a new weather stage is chosen" )]
 		[Slider( 0f, 60f, 61 )]
 		public float WeatherNotificationsTime = 15f;
 
-		[Name( "Display Inside" )]
+		[Name("Delay Time")]
+		[Description("When enabled, this will delay the notification. It is in seconds")]
+		[Slider(2f, 60f, 61)]
+		public float WeatherNotificationsDelay = 2f;
+
+        [Name( "Display Inside" )]
 		[Description( "Show the message while indoors" )]
 		public bool WeatherNotificationsIndoors = false;
 
@@ -84,11 +91,11 @@ namespace AuroraMonitor
 		public bool forceLate               = false;
 
 		[Name("Duration Override")]
-		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you dont mind unpredicatable things to happen")]
+		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
 		public bool forceDuration           = false;
 
 		[Name("Duration Overide Time")]
-		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you dont mind unpredicatable things to happen")]
+		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
 		public float forceDurationTime      = 0f;
 
 		[Section("RGBa Colour Chooser")]
@@ -109,18 +116,22 @@ namespace AuroraMonitor
 		[Slider(0.01f, 1f)]
 		public float AuroraColour_B         = 0.35f;
 
-		[Name("Alpha")]
-		[Slider(0f, 1f)]
-		[Description("Alpha refers to brightness")]
-		public float AuroraColour_A         = 0f;
+		[Section("First Aid Screen")]
 
-		[Name("Normalize Alpha")]
-		[Description("Will normalize alpha, which is the amount the aurora is active (1f when fully active, 0f when not)")]
-		public bool AuroraColour_Normalize  = true;
+		[Name("Enabled")]
+		public bool FirstAidScreen_Enabled = true;
 
-		#endregion
+		[Name("Font Size")]
+		public int FirstAidScreen_FontSize = 16;
 
-		protected override void OnChange(FieldInfo field, object? oldValue, object? newValue)
+        [Name("Units to use")]
+        [Description("Change this to change the displayed units")]
+        [Choice(new string[] { "KM/H", "M/S", "MP/H" })]
+        public UnitUse FirstAidScreen_UnitsToUse = UnitUse.Metric;
+
+        #endregion
+
+        protected override void OnChange(FieldInfo field, object? oldValue, object? newValue)
 		{
 			if (field.Name == nameof(forceNextAurora))
 			{
@@ -130,7 +141,12 @@ namespace AuroraMonitor
 			{
 				RefreshFields();
 			}
-			base.OnChange(field, oldValue, newValue);
+
+            //UIUtilities.UpdateLabelFontSize(UIUtilities.WeatherMonitorWindSpeedUnit, Instance.FirstAidScreen_FontSize);
+            //UIUtilities.UpdateLabelFontSize(UIUtilities.WeatherMonitorWindSpeed, Instance.FirstAidScreen_FontSize);
+            //UIUtilities.UpdateLabelFontSize(UIUtilities.WeatherMonitorWeather, Instance.FirstAidScreen_FontSize);
+
+            base.OnChange(field, oldValue, newValue);
 		}
 
 		protected override void OnConfirm()
@@ -151,8 +167,6 @@ namespace AuroraMonitor
 			SetFieldVisible(nameof(AuroraColour_R),             Instance.AuroraColour == AuroraColourSettings.Custom);
 			SetFieldVisible(nameof(AuroraColour_G),             Instance.AuroraColour == AuroraColourSettings.Custom);
 			SetFieldVisible(nameof(AuroraColour_B),             Instance.AuroraColour == AuroraColourSettings.Custom);
-			SetFieldVisible(nameof(AuroraColour_A),             Instance.AuroraColour == AuroraColourSettings.Custom);
-			SetFieldVisible(nameof(AuroraColour_Normalize),     Instance.AuroraColour == AuroraColourSettings.Custom);
 		}
 
 		public void OnLoadConfirm()

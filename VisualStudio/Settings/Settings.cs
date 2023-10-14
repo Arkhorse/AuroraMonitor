@@ -1,19 +1,10 @@
+using AuroraMonitor.Utilities.Enums;
+
 namespace AuroraMonitor
 {
 	internal class Settings : JsonModSettings
 	{
 		internal static Settings Instance { get; } = new();
-
-		public enum AuroraColourSettings { Default, Cinematic, Custom };
-		public enum UnitUse { Metric, Scientific, Imperial }
-
-		/*
-			Cinematic #6496fa   : 0.392156869f, 0.5882353f, 0.980392158f, 1f
-			Default             : 0.3, 0.2, 0.35, 0
-		*/
-
-		public enum ToxicFogImages { l1, l2, l3 }
-
 		#region Settings
 
 		[Section("Basic")]

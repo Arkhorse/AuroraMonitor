@@ -1,107 +1,123 @@
+global using AuroraUtilities = AuroraMonitor.Utilities.Aurora.AuroraUtilities;
+global using WeatherNotifications = AuroraMonitor.Notifications.WeatherNotifications;
+global using WeatherUtilities = AuroraMonitor.Utilities.WeatherUtilities;
+global using AuroraMonitor.Utilities;
+global using AuroraMonitor.Utilities.Enums;
+
+using AuroraMonitor.Notifications;
+using MelonLoader.Utils;
+using AuroraMonitor.JSON;
+using UnityEngine;
+
 namespace AuroraMonitor
 {
     internal class Main : MelonMod
     {
-        // This is used to init the mod. If you have no settings or other dependent mods, this method is not needed
-        public static bool AuroraActive { get; set; }
-        public Main Instance { get; set; }
+        public static string MonitorFolder { get; } = Path.Combine(MelonEnvironment.ModsDirectory, "Monitor");
+        public static string MonitorMainConfig { get; } = Path.Combine(MonitorFolder, "main.json");
+        public static bool BaseLoaded { get; set; } = false;
+        public static bool SandboxLoaded { get; set; } = false;
+        public static bool DLC01Loaded { get; set; } = false;
+        public static string BaseSceneName { get; set; } = string.Empty;
+        public static string SandboxSceneName { get; set; } = string.Empty;
+        public static string DLC01SceneName { get; set; } = string.Empty;
+        public static bool ModInitiliated { get; set; } = false;
+        public static WeatherMonitorData? MonitorData { get; set; } = new();
+
+        public static AssetBundle? FirstAidAddons { get; set; }
+        public static string Panel_FirstAid_AddonsBundlePath { get; } = "AuroraMonitor.Resources.panel_firstaid_addons";
+
         public override void OnInitializeMelon()
         {
-            Instance = this;
-            Settings.OnLoad();
-            RegisterCommands();
-#if DEBUG
-            Logger.Log($"Mod has loaded with version: {BuildInfo.Version}");
-#endif
-        }
-
-        // Needed because its always set to false on scene change
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
-        {
-            if (sceneName.Contains("SANDBOX"))
+            if (!Directory.Exists(MonitorFolder))
             {
-                if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
-                {
-                    GameManager.GetAuroraManager().SetCinematicColours(Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic);
-                }
+                Directory.CreateDirectory(MonitorFolder);
             }
-            base.OnSceneWasLoaded(buildIndex, sceneName);
+            if (!File.Exists(MonitorMainConfig))
+            {
+                JsonFile.Save<WeatherMonitorData>(MonitorMainConfig, MonitorData);
+            }
+
+            MonitorData = JsonFile.Load<WeatherMonitorData>(MonitorMainConfig);
+            //FirstAidAddons = LoadAssetBundle(Panel_FirstAid_AddonsBundlePath);
+
+            Settings.OnLoad();
+            ConsoleCommands.RegisterCommands();
+            if (Settings.Instance.PRINTDEBUGLOG)
+            {
+                Logging.LogStarter();
+            }
         }
 
-        /// <summary>
-        /// Used to fetch aurora time. Currently not implemented
-        /// </summary>
-        internal static void FetchAuroraTime()
+        public static AssetBundle LoadAssetBundle(string name)
         {
-            Logger.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}");
+            using (Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name))
+            using (MemoryStream? memory = new())
+            {
+                stream!.CopyTo(memory);
+                return AssetBundle.LoadFromMemory(memory.ToArray());
+            };
         }
 
-        /// <summary>
-        /// Used to fetch aurora colour
-        /// </summary>
-        internal static void FetchAuroraColour()
+        // Using this actually works 100% of the time. OnSceneWasLoaded and OnSceneWasUnloaded is Additative scene loads ONLY
+        public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
-            Color AuroraColor = GameManager.GetAuroraManager().GetAuroraColour();
-            Logger.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
-        }
-        
-        /// <summary>
-        /// Prints all debug info to the MelonLog
-        /// </summary>
-        internal static void PrintDebugInfo()
-        {
-            Weather weatherComponent        = GameManager.GetWeatherComponent();
-            WeatherTransition weather       = GameManager.GetWeatherTransitionComponent();
-            UniStormWeatherSystem uniStorm  = GameManager.GetUniStorm();
-            AuroraManager auroraManager     = GameManager.GetAuroraManager();
+            base.OnSceneWasInitialized(buildIndex, sceneName);
+            if (sceneName == "Empty" || sceneName == "Boot" ) return;
 
-            float alpha                     = auroraManager.GetNormalizedAlpha();
-            bool cinematicColours           = auroraManager.IsUsingCinematicColours();
-            int numFramesNotActive          = auroraManager.m_NumFramesNotActive;
-            bool forcedAuroraNext           = auroraManager.m_ForceAuroraNextOpportunity;
-            int numAuroraSave               = auroraManager.m_NumAurorasForSave;
-            bool started                    = auroraManager.AuroraIsActive();
-            bool fullystarted               = auroraManager.IsFullyActive();
-            bool boosted                    = auroraManager.IsAuroraBoostEnabled();
+            if (sceneName.StartsWith("MainMenu", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Settings.Instance.OnLoadConfirm();
+                return;
+            }
 
-            float secondsSinceLastChange    = uniStorm.m_SecondsSinceLastWeatherChange;
+            // only needed if you want to know what the scene name is. The buildIndex is always -1 or 0
+            //if (Settings.Instance.PRINTDEBUGLOG) Logging.Log($"Scene Initialized, name: {sceneName}, index: {buildIndex}");
 
-            Logger.LogSeperator();
 
-            Logger.Log($"Current Day:                    {uniStorm.GetDayNumber()}");
-            Logger.Log($"Current Weather:                {uniStorm.GetWeatherStage()}");
-            Logger.Log($"Time Since Last Change:         {secondsSinceLastChange}");
+            if (SceneUtilities.IsSceneBase(sceneName) && !SceneUtilities.IsSceneAdditive(sceneName))
+            {
+                BaseLoaded = true;
+                BaseSceneName = sceneName;
 
-            Logger.Log($"Aurora Early Chance:            {weatherComponent.m_AuroraEarlyWindowProbability}");
-            Logger.Log($"Aurora Late Chance:             {weatherComponent.m_AuroraLateWindowProbability}");
-
-            Logger.Log($"cinematicColours:               {cinematicColours}");
-            Logger.Log($"numFramesNotActive:             {numFramesNotActive}");
-            Logger.Log($"forcedAuroraNext:               {forcedAuroraNext}");
-            Logger.Log($"numAuroraSave:                  {numAuroraSave}");
-            Logger.Log($"started:                        {started}");
-            Logger.Log($"fullystarted:                   {fullystarted}");
-            Logger.Log($"boosted:                        {boosted}");
-            Logger.Log($"AuroraActive:                   {Main.AuroraActive}");
-
-            FetchAuroraColour();
-
-            Logger.LogSeperator();
-
-            //Logger.Log($"");
+                if (Settings.Instance.WeatherNotificationsSceneChange) WeatherNotifications.MaybeDisplayWeatherNotification();
+            }
+            else if (sceneName.EndsWith("SANDBOX", StringComparison.InvariantCultureIgnoreCase))
+            {
+                SandboxLoaded = true;
+                SandboxSceneName = sceneName;
+            }
+            else if (sceneName.EndsWith("DLC01", StringComparison.InvariantCultureIgnoreCase))
+            {
+                DLC01Loaded = true;
+                DLC01SceneName = sceneName;
+            }
         }
 
-        internal static void ForceUpdate()
+        public override void OnLateUpdate()
         {
-            AuroraActive = !AuroraActive;
-        }
+            base.OnLateUpdate();
+            try
+            {
+                string currentScene = GameManager.m_ActiveScene;
 
-        private void RegisterCommands()
-        {
-            uConsole.RegisterCommand("get_aurora_color",            new Action(FetchAuroraColour));
-            uConsole.RegisterCommand("get_aurora_time",             new Action(FetchAuroraTime));
-            uConsole.RegisterCommand("AuroraMonitorDebug",          new Action(PrintDebugInfo));
-            uConsole.RegisterCommand("AuroraMonitorForceUpdate",    new Action(ForceUpdate));
+                if (currentScene == "Empty" || currentScene == "Boot" || currentScene.StartsWith("MainMenu", StringComparison.InvariantCultureIgnoreCase)) return;
+            }
+            catch { }
+
+            try
+            {
+                if (!GameManager.GetUniStorm()) return;
+            }
+            catch { }
+
+            try
+            {
+                WeatherNotifications.MaybeDisplayWeatherNotification();
+            }
+            catch { }
+
+            //WeatherNotifications.UpdateFirstAidPanel();
         }
     }
 }

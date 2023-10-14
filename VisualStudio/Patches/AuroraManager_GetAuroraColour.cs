@@ -1,4 +1,6 @@
-﻿namespace AuroraMonitor
+﻿using AuroraMonitor.Utilities.Enums;
+
+namespace AuroraMonitor
 {
     [HarmonyPatch(typeof(AuroraManager), nameof(AuroraManager.GetAuroraColour))]
     internal class AuroraManager_GetAuroraColour
@@ -13,29 +15,28 @@
         {
             if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return; // mod not usable in challenges
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
-            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Default) || Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            Color white = Color.white;
+
+            if (Settings.Instance.AuroraColour == AuroraColourSettings.Custom)
+            {
+                white.r = Settings.Instance.AuroraColour_R;
+                white.g = Settings.Instance.AuroraColour_G;
+                white.b = Settings.Instance.AuroraColour_B;
+                white.a = Mathf.Pow(normalizedAlpha, 2);
+
+                __result = white;
+            }
+
+            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Settings.Instance.AuroraColour == AuroraColourSettings.Default) || Settings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
             {
                 __result = new Color(0.392156869f, 0.5882353f, 0.980392158f, 1f);
             }
-            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Custom)
-            {
-                Color White = Color.white;
 
-                White.r = Settings.Instance.AuroraColour_R;
-                White.g = Settings.Instance.AuroraColour_G;
-                White.b = Settings.Instance.AuroraColour_B;
-                White.a = Settings.Instance.AuroraColour_A;
-                if (Settings.Instance.AuroraColour_Normalize)
-                {
-                    White.a *= Mathf.Pow(normalizedAlpha, 2);
-                }
-                __result = White;
-            }
-            Color white = Color.white;
             white.r = Mathf.Lerp(GameManager.GetAuroraManager().m_RedTint.GetMin(),         GameManager.GetAuroraManager().m_RedTint.GetMax(),          Mathf.Sin(GameManager.GetAuroraManager().m_ColorTimers.x));
             white.g = Mathf.Lerp(GameManager.GetAuroraManager().m_GreenTint.GetMin(),       GameManager.GetAuroraManager().m_GreenTint.GetMax(),        Mathf.Sin(GameManager.GetAuroraManager().m_ColorTimers.y));
             white.b = Mathf.Lerp(GameManager.GetAuroraManager().m_BlueTint.GetMin(),        GameManager.GetAuroraManager().m_BlueTint.GetMax(),         Mathf.Sin(GameManager.GetAuroraManager().m_ColorTimers.z));
-            white.a = Mathf.Lerp(GameManager.GetAuroraManager().m_AlphaControl.GetMin(),    GameManager.GetAuroraManager().m_AlphaControl.GetMax(),     Mathf.Sin(GameManager.GetAuroraManager().m_ColorTimers.w) ) * normalizedAlpha * normalizedAlpha;
+            white.a = Mathf.Lerp(GameManager.GetAuroraManager().m_AlphaControl.GetMin(),    GameManager.GetAuroraManager().m_AlphaControl.GetMax(),     Mathf.Sin(GameManager.GetAuroraManager().m_ColorTimers.w) ) * Mathf.Pow(normalizedAlpha, 2);
+
             __result = white;
         }
     }
@@ -54,23 +55,22 @@
             Color auroraColour = GameManager.GetAuroraManager().GetAuroraColour();
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
 
-            if (GameManager.GetAuroraManager().IsUsingCinematicColours() || Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            if (Settings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
             {
-                __result = auroraColour;
+                GameManager.GetAuroraManager().SetCinematicColours( true );
+                return;
             }
-            else if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Custom)
+            else if (Settings.Instance.AuroraColour == AuroraColourSettings.Custom)
             {
                 Color White = Color.white;
 
                 White.r = Settings.Instance.AuroraColour_R;
                 White.g = Settings.Instance.AuroraColour_G;
                 White.b = Settings.Instance.AuroraColour_B;
-                White.a = Settings.Instance.AuroraColour_A;
-                if (Settings.Instance.AuroraColour_Normalize)
-                {
-                    White.a *= Mathf.Pow(normalizedAlpha, 2);
-                }
+                White.a = Mathf.Pow(normalizedAlpha, 2);
+
                 __result = White;
+                return;
             }
             else
             {

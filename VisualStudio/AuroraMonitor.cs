@@ -1,4 +1,4 @@
-global using AuroraUtilities = AuroraMonitor.Aurora.AuroraUtilities;
+global using AuroraUtilities = AuroraMonitor.Utilities.Aurora.AuroraUtilities;
 global using WeatherNotifications = AuroraMonitor.Notifications.WeatherNotifications;
 global using WeatherUtilities = AuroraMonitor.Utilities.WeatherUtilities;
 global using AuroraMonitor.Utilities;

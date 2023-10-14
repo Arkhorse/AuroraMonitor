@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unity;
-using UnityEngine;
-using Il2Cpp;
-using Il2CppInterop.Runtime;
-
-namespace AuroraMonitor.Panel
+﻿namespace AuroraMonitor.Panel
 {
     [RegisterTypeInIl2Cpp]
     public class FirstAidPanel_Addons : MonoBehaviour
@@ -104,10 +94,9 @@ namespace AuroraMonitor.Panel
 
             WeatherMonitorHeaderLabel.text          = "Weather Monitor";
             WeatherMonitorHeaderLabel.capsLock      = true;
-            //WeatherMonitorHeaderLabel.fontStyle     = FontStyle.Bold;
 
             WeatherMonitorWeatherLabel.text         = Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()));
-            WeatherMonitorWindSpeedLabel.text       = string.Format("{0} {1}", WeatherNotifications.GetNormalizedSpeed(GameManager.GetWindComponent().GetSpeedMPH()).ToString(), WeatherNotifications.GetCurrentUnitsString(1));
+            WeatherMonitorWindSpeedLabel.text       = string.Format("{0} {1}", WeatherUtilities.GetNormalizedSpeed(GameManager.GetWindComponent().GetSpeedMPH()).ToString(), WeatherUtilities.GetCurrentUnitsString(1));
 
             WeatherMonitorAuroraLabel.text          = "Aurora Fully Active";
             WeatherMonitorAuroraLabel.color         = Color.red;

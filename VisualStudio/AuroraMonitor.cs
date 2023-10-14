@@ -2,8 +2,12 @@ global using AuroraUtilities = AuroraMonitor.Aurora.AuroraUtilities;
 global using WeatherNotifications = AuroraMonitor.Notifications.WeatherNotifications;
 global using WeatherUtilities = AuroraMonitor.Utilities.WeatherUtilities;
 global using AuroraMonitor.Utilities;
+global using AuroraMonitor.Utilities.Enums;
+
 using AuroraMonitor.Notifications;
 using MelonLoader.Utils;
+using AuroraMonitor.JSON;
+using UnityEngine;
 
 namespace AuroraMonitor
 {
@@ -18,10 +22,25 @@ namespace AuroraMonitor
         public static string SandboxSceneName { get; set; } = string.Empty;
         public static string DLC01SceneName { get; set; } = string.Empty;
         public static bool ModInitiliated { get; set; } = false;
-        public static WeatherMonitorData MonitorData { get; set; } = new();
+        public static WeatherMonitorData? MonitorData { get; set; } = new();
+
+        public static AssetBundle? FirstAidAddons { get; set; }
+        public static string Panel_FirstAid_AddonsBundlePath { get; } = "AuroraMonitor.Resources.panel_firstaid_addons";
 
         public override void OnInitializeMelon()
         {
+            if (!Directory.Exists(MonitorFolder))
+            {
+                Directory.CreateDirectory(MonitorFolder);
+            }
+            if (!File.Exists(MonitorMainConfig))
+            {
+                JsonFile.Save<WeatherMonitorData>(MonitorMainConfig, MonitorData);
+            }
+
+            MonitorData = JsonFile.Load<WeatherMonitorData>(MonitorMainConfig);
+            //FirstAidAddons = LoadAssetBundle(Panel_FirstAid_AddonsBundlePath);
+
             Settings.OnLoad();
             ConsoleCommands.RegisterCommands();
             if (Settings.Instance.PRINTDEBUGLOG)
@@ -30,9 +49,14 @@ namespace AuroraMonitor
             }
         }
 
-        public override void OnDeinitializeMelon()
+        public static AssetBundle LoadAssetBundle(string name)
         {
-            base.OnDeinitializeMelon();
+            using (Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name))
+            using (MemoryStream? memory = new())
+            {
+                stream!.CopyTo(memory);
+                return AssetBundle.LoadFromMemory(memory.ToArray());
+            };
         }
 
         // Using this actually works 100% of the time. OnSceneWasLoaded and OnSceneWasUnloaded is Additative scene loads ONLY
@@ -92,6 +116,8 @@ namespace AuroraMonitor
                 WeatherNotifications.MaybeDisplayWeatherNotification();
             }
             catch { }
+
+            //WeatherNotifications.UpdateFirstAidPanel();
         }
     }
 }

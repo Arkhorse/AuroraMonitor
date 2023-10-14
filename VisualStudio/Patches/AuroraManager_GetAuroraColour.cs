@@ -1,4 +1,6 @@
-﻿namespace AuroraMonitor
+﻿using AuroraMonitor.Utilities.Enums;
+
+namespace AuroraMonitor
 {
     [HarmonyPatch(typeof(AuroraManager), nameof(AuroraManager.GetAuroraColour))]
     internal class AuroraManager_GetAuroraColour
@@ -15,7 +17,7 @@
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
             Color white = Color.white;
 
-            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Custom)
+            if (Settings.Instance.AuroraColour == AuroraColourSettings.Custom)
             {
                 white.r = Settings.Instance.AuroraColour_R;
                 white.g = Settings.Instance.AuroraColour_G;
@@ -25,7 +27,7 @@
                 __result = white;
             }
 
-            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Default) || Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Settings.Instance.AuroraColour == AuroraColourSettings.Default) || Settings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
             {
                 __result = new Color(0.392156869f, 0.5882353f, 0.980392158f, 1f);
             }
@@ -53,12 +55,12 @@
             Color auroraColour = GameManager.GetAuroraManager().GetAuroraColour();
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
 
-            if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Cinematic)
+            if (Settings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
             {
                 GameManager.GetAuroraManager().SetCinematicColours( true );
                 return;
             }
-            else if (Settings.Instance.AuroraColour == Settings.AuroraColourSettings.Custom)
+            else if (Settings.Instance.AuroraColour == AuroraColourSettings.Custom)
             {
                 Color White = Color.white;
 

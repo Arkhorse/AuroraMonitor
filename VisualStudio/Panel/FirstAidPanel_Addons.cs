@@ -1,4 +1,6 @@
-﻿namespace AuroraMonitor.Panel
+﻿using UnityEngine.UI;
+
+namespace AuroraMonitor.Panel
 {
     [RegisterTypeInIl2Cpp]
     public class FirstAidPanel_Addons : MonoBehaviour
@@ -8,98 +10,165 @@
         public static int WeatherMonitorXOffset = 329;
 
         #region Objects
+        // WeatherMonitorAddon
+        // WeatherMonitorAddonObject
+
         internal GameObject? AttachedObject { get; set; }
-        internal GameObject? WeatherMonitorHeader { get; set; }
-        internal GameObject? WeatherMonitorWeather { get; set; }
-        internal GameObject? WeatherMonitorWindSpeed { get; set; }
-        internal GameObject? WeatherMonitorAurora { get; set; }
-
-        internal UILabel? WeatherMonitorHeaderLabel { get; set; }
-        internal UILabel? WeatherMonitorWeatherLabel { get; set; }
-        internal UILabel? WeatherMonitorWindSpeedLabel { get; set; }
-        internal UILabel? WeatherMonitorAuroraLabel { get; set; }
-
-        internal Vector3 WeatherMonitorHeaderPosition { get; set; }                 = new(WeatherMonitorXOffset, -130, 0);
-        internal Vector3 WeatherMonitorAuroraPosition { get; set; }                 = new(WeatherMonitorXOffset, -160, 0);
-        internal Vector3 WeatherMonitorWeatherPosition{ get; set; }                 = new(WeatherMonitorXOffset, -190, 0);
-        internal Vector3 WeatherMonitorWindSpeedPosition { get; set; }              = new(WeatherMonitorXOffset, -220, 0);
-        
+        internal GameObject? WeatherMonitorAddonObject { get; set; }
+        internal GameObject? WeatherMonitorAddonObjectRectTransform{ get; set; }
+        internal GameObject? WeatherMonitorAddonObjectCanvas { get; set; }
+        internal GameObject? WeatherMonitorAddonObjectHeader { get; set; }
+        internal GameObject? WeatherMonitorAddonObjectWeather { get; set; }
+        internal GameObject? WeatherMonitorAddonObjectWindSpeed { get; set; }
+        internal GameObject? WeatherMonitorAddonObjectAurora { get; set; }
+        internal GameObject? WeatherMonitorAddonObjectAuroraLoading { get; set; }
+        internal GameObject? WeatherMonitorAddonObjectAuroraDissipating { get; set; }
         #endregion
+        #region SubObjects
+        internal Canvas? WeatherMonitorAddonCanvas { get; set; }
+        //internal RectTransform? WeatherMonitorAddonRectTransform { get; set; }
+
+        //internal Image? WeatherMonitorAddonImage { get; set; }
+
+        internal UILabel? WeatherMonitorAddonHeaderLabel { get; set; }
+        internal UILabel? WeatherMonitorAddonWeatherLabel { get; set; }
+        internal UILabel? WeatherMonitorAddonWindSpeedLabel { get; set; }
+        internal UILabel? WeatherMonitorAddonAuroraLabel { get; set; }
+        internal UILabel? WeatherMonitorAddonAuroraLoadingLabel { get; set; }
+        internal UILabel? WeatherMonitorAddonObjectAuroraDissipatingLabel { get; set; }
+        #endregion
+        #region Fonts
+        UnityEngine.Object? AmbigiusFont { get; set; }
+        UIFont? BitmapFont { get; set; }
+        UIFont? Font { get; set; }
+        #endregion
+        #region Positions
+        internal Vector3 WeatherMonitorAddonBasePosition { get; set; }          = new(WeatherMonitorXOffset, -130, 0);
+
+        internal Vector3 WeatherMonitorAddonHeaderPosition { get; set; }        = new(WeatherMonitorXOffset, -130, 0);
+        internal Vector3 WeatherMonitorAddonAuroraPosition { get; set; }        = new(WeatherMonitorXOffset, -160, 0);
+        internal Vector3 WeatherMonitorAddonWeatherPosition { get; set; }       = new(WeatherMonitorXOffset, -190, 0);
+        internal Vector3 WeatherMonitorAddonWindSpeedPosition { get; set; }     = new(WeatherMonitorXOffset, -220, 0);
+        #endregion
+
+        internal float WeatherMonitorAddonAuroraValue { get; set; }
+
 
         public void Awake()
         {
             AttachedObject = base.gameObject;
 
-            WeatherMonitorHeader                                    = new()
-            {
-                name                                                = "WeatherMonitorHeader"
-            };
-            WeatherMonitorWeather                                   = new()
-            {
-                name                                                = "WeatherMonitorWeather"
-            };
-            WeatherMonitorWindSpeed                                 = new()
-            {
-                name                                                = "WeatherMonitorWindSpeed"
-            };
-            WeatherMonitorAurora                                    = new()
-            {
-                name                                                = "WeatherMonitorAurora"
-            };
+            WeatherMonitorAddonObject                   = new GameObject() { name = "WeatherMonitorAddonObject", layer = vp_Layer.UI };
+            DontDestroyOnLoad(WeatherMonitorAddonObject);
+
+            //WeatherMonitorAddonObjectRectTransform      = new() { name = "WeatherMonitorAddonObjectRectTransform", layer = vp_Layer.UI };
+            //WeatherMonitorAddonObjectCanvas             = new() { name = "WeatherMonitorAddonObjectCanvas", layer = vp_Layer.UI };
+            WeatherMonitorAddonObjectHeader             = new() { name = "WeatherMonitorAddonObjectHeader", layer = vp_Layer.UI };
+            WeatherMonitorAddonObjectWeather            = new() { name = "WeatherMonitorAddonObjectWeather", layer = vp_Layer.UI };
+            WeatherMonitorAddonObjectWindSpeed          = new() { name = "WeatherMonitorAddonObjectWindSpeed", layer = vp_Layer.UI };
+            WeatherMonitorAddonObjectAurora             = new() { name = "WeatherMonitorAddonObjectAurora", layer = vp_Layer.UI };
+            WeatherMonitorAddonObjectAuroraLoading      = new() { name = "WeatherMonitorAddonObjectAuroraLoading", layer = vp_Layer.UI };
+            WeatherMonitorAddonObjectAuroraDissipating  = new() { name = "WeatherMonitorAddonObjectAuroraDissipating", layer = vp_Layer.UI };
+
+            AmbigiusFont                                = InterfaceManager.GetPanel<Panel_FirstAid>().m_AirTempLabel.ambigiousFont;
+            BitmapFont                                  = InterfaceManager.GetPanel<Panel_FirstAid>().m_AirTempLabel.bitmapFont;
+            Font                                        = InterfaceManager.GetPanel<Panel_FirstAid>().m_AirTempLabel.font;
+
+            WeatherMonitorAddonObject.transform.SetParent(AttachedObject.transform);
+
+            //WeatherMonitorAddonObjectCanvas.AddComponent<Canvas>();
+            //WeatherMonitorAddonObjectRectTransform.AddComponent<RectTransform>();
+            //WeatherMonitorAddonObjectRectTransform.AddComponent<Image>();
+            WeatherMonitorAddonObjectHeader.AddComponent<UILabel>();
+            WeatherMonitorAddonObjectWeather.AddComponent<UILabel>();
+            WeatherMonitorAddonObjectWindSpeed.AddComponent<UILabel>();
+            WeatherMonitorAddonObjectAurora.AddComponent<UILabel>();
+            WeatherMonitorAddonObjectAuroraLoading.AddComponent<UILabel>();
+            WeatherMonitorAddonObjectAuroraDissipating.AddComponent<UILabel>();
+
+            //WeatherMonitorAddonObjectCanvas.transform.SetParent(WeatherMonitorAddonObject.transform);
+            //WeatherMonitorAddonObjectRectTransform.transform.SetParent(WeatherMonitorAddonObjectCanvas.transform);
 
 
-            WeatherMonitorHeader.AddComponent<UILabel>();
-            WeatherMonitorWeather.AddComponent<UILabel>();
-            WeatherMonitorWindSpeed.AddComponent<UILabel>();
-            WeatherMonitorAurora.AddComponent<UILabel>();
 
-            WeatherMonitorHeader.transform.SetParent(AttachedObject.transform);
-            WeatherMonitorWeather.transform.SetParent(AttachedObject.transform);
-            WeatherMonitorWindSpeed.transform.SetParent(AttachedObject.transform);
-            WeatherMonitorAurora.transform.SetParent(AttachedObject.transform);
+            //WeatherMonitorAddonCanvas                       = WeatherMonitorAddonObjectCanvas.GetComponent<Canvas>();
+            //WeatherMonitorAddonCanvas.renderMode            = RenderMode.ScreenSpaceOverlay;
+            //WeatherMonitorAddonCanvas.pixelPerfect          = true;
 
-            WeatherMonitorHeaderLabel                                       = WeatherMonitorHeader.GetComponent<UILabel>();
-            WeatherMonitorWeatherLabel                                      = WeatherMonitorWeather.GetComponent<UILabel>();
-            WeatherMonitorWindSpeedLabel                                    = WeatherMonitorWindSpeed.GetComponent<UILabel>();
-            WeatherMonitorAuroraLabel                                       = WeatherMonitorAurora.GetComponent<UILabel>();
 
-            WeatherMonitorHeader.transform.localPosition                    = WeatherMonitorHeaderPosition;
-            WeatherMonitorWeather.transform.localPosition                   = WeatherMonitorWeatherPosition;
-            WeatherMonitorWindSpeed.transform.localPosition                 = WeatherMonitorWindSpeedPosition;
-            WeatherMonitorAurora.transform.localPosition                    = WeatherMonitorAuroraPosition;
+            //WeatherMonitorAddonRectTransform                = WeatherMonitorAddonObjectRectTransform.GetComponent<RectTransform>();
 
-            WeatherMonitorHeaderLabel.name                                  = "WeatherMonitorHeaderLabel";
-            WeatherMonitorWeatherLabel.name                                 = "WeatherMonitorWeatherLabel";
-            WeatherMonitorWindSpeedLabel.name                               = "WeatherMonitorWindSpeedLabel";
-            WeatherMonitorAuroraLabel.name                                  = "WeatherMonitorAuroraLabel";
+            //WeatherMonitorAddonImage                        = WeatherMonitorAddonObjectRectTransform.GetComponent<Image>();
+            //WeatherMonitorAddonImage.color                  = new Color(1f, 1f, 1f, 0.75f);
+            //WeatherMonitorAddonImage.transform.SetParent(WeatherMonitorAddonObjectRectTransform.transform);
 
-            SetupLabel(WeatherMonitorHeaderLabel);
-            SetupLabel(WeatherMonitorWeatherLabel);
-            SetupLabel(WeatherMonitorWindSpeedLabel);
-            SetupLabel(WeatherMonitorAuroraLabel);
+            WeatherMonitorAddonObjectHeader.transform.SetParent(AttachedObject.transform);
+            WeatherMonitorAddonObjectWeather.transform.SetParent(AttachedObject.transform);
+            WeatherMonitorAddonObjectWindSpeed.transform.SetParent(AttachedObject.transform);
+            WeatherMonitorAddonObjectAurora.transform.SetParent(AttachedObject.transform);
+            WeatherMonitorAddonObjectAuroraLoading.transform.SetParent(AttachedObject.transform);
+            WeatherMonitorAddonObjectAuroraDissipating.transform.SetParent(AttachedObject.transform);
 
+            WeatherMonitorAddonHeaderLabel                          = WeatherMonitorAddonObjectHeader.GetComponent<UILabel>();
+            WeatherMonitorAddonWeatherLabel                         = WeatherMonitorAddonObjectWeather.GetComponent<UILabel>();
+            WeatherMonitorAddonWindSpeedLabel                       = WeatherMonitorAddonObjectWindSpeed.GetComponent<UILabel>();
+            WeatherMonitorAddonAuroraLabel                          = WeatherMonitorAddonObjectAurora.GetComponent<UILabel>();
+            WeatherMonitorAddonAuroraLoadingLabel                   = WeatherMonitorAddonObjectAuroraLoading.GetComponent<UILabel>();
+            WeatherMonitorAddonObjectAuroraDissipatingLabel         = WeatherMonitorAddonObjectAuroraDissipating.GetComponent<UILabel>();
+
+
+            WeatherMonitorAddonHeaderLabel.name                     = "WeatherMonitorAddonHeaderLabel";
+            WeatherMonitorAddonWeatherLabel.name                    = "WeatherMonitorAddonWeatherLabel";
+            WeatherMonitorAddonWindSpeedLabel.name                  = "WeatherMonitorAddonWindSpeedLabel";
+            WeatherMonitorAddonAuroraLabel.name                     = "WeatherMonitorAddonAuroraLabel";
+            WeatherMonitorAddonAuroraLoadingLabel.name              = "WeatherMonitorAddonAuroraLoadingLabel";
+            WeatherMonitorAddonObjectAuroraDissipatingLabel.name    = "WeatherMonitorAddonObjectAuroraDissipatingLabel";
+
+            //WeatherMonitorAddonRectTransform.localScale     = new Vector3(1f, 1f, 1f);
+
+            //WeatherMonitorAddonObjectCanvas.transform.localPosition                           = WeatherMonitorAddonBasePosition;
+
+            //WeatherMonitorAddonObjectAurora.transform.localPosition                     = new Vector3(0, 0, 0);
+            //WeatherMonitorAddonObjectHeader.transform.localPosition                     = new Vector3(0,-30,0);
+            //WeatherMonitorAddonObjectWeather.transform.localPosition                    = new Vector3(0, -60, 0);
+            //WeatherMonitorAddonObjectWindSpeed.transform.localPosition                  = new Vector3(0, -90, 0);
+
+            WeatherMonitorAddonObjectAurora.transform.localPosition = WeatherMonitorAddonAuroraPosition;
+            WeatherMonitorAddonObjectAuroraLoading.transform.localPosition = WeatherMonitorAddonAuroraPosition;
+            WeatherMonitorAddonObjectAuroraDissipating.transform.localPosition = WeatherMonitorAddonAuroraPosition;
+
+            WeatherMonitorAddonObjectHeader.transform.localPosition = WeatherMonitorAddonHeaderPosition;
+            WeatherMonitorAddonObjectWeather.transform.localPosition = WeatherMonitorAddonWeatherPosition;
+            WeatherMonitorAddonObjectWindSpeed.transform.localPosition = WeatherMonitorAddonWindSpeedPosition;
+
+
+            SetupLabel(WeatherMonitorAddonHeaderLabel, "Weather Monitor",                           FontStyle.Normal, UILabel.Crispness.Always, NGUIText.Alignment.Center, UILabel.Overflow.ResizeFreely, false, 16, 16, Color.white, true);
+            SetupLabel(WeatherMonitorAddonWeatherLabel, string.Empty,                                   FontStyle.Normal, UILabel.Crispness.Always, NGUIText.Alignment.Center, UILabel.Overflow.ResizeFreely, false, 16, 16, Color.white, false);
+            SetupLabel(WeatherMonitorAddonWindSpeedLabel, string.Empty,                                 FontStyle.Normal, UILabel.Crispness.Always, NGUIText.Alignment.Center, UILabel.Overflow.ResizeFreely, false, 16, 16, Color.white, false);
+            SetupLabel(WeatherMonitorAddonAuroraLabel, "Aurora Full Active",                        FontStyle.Normal, UILabel.Crispness.Always, NGUIText.Alignment.Center, UILabel.Overflow.ResizeFreely, false, 16, 16, Color.red, true);
+            SetupLabel(WeatherMonitorAddonAuroraLoadingLabel, "Aurora Loading {0}",                 FontStyle.Normal, UILabel.Crispness.Always, NGUIText.Alignment.Center, UILabel.Overflow.ResizeFreely, false, 16, 16, Color.red, true);
+            SetupLabel(WeatherMonitorAddonObjectAuroraDissipatingLabel, "Aurora Dissipating {0}",   FontStyle.Normal, UILabel.Crispness.Always, NGUIText.Alignment.Center, UILabel.Overflow.ResizeFreely, false, 16, 16, Color.yellow, true);
             //SetupSprite(WeatherMonitorSpriteSprite);
+
+            //WeatherMonitorAddonCanvas.enabled = true;
         }
 
         public void Update()
         {
             if (AttachedObject == null) return;
-            if (WeatherMonitorHeaderLabel == null) return;
-            if (WeatherMonitorWeatherLabel == null) return;
-            if (WeatherMonitorWindSpeedLabel == null) return;
-            //if (WeatherMonitorSpriteSprite == null) return;
-            if (WeatherMonitorAuroraLabel == null) return;
+            if (WeatherMonitorAddonWeatherLabel == null) return;
+            if (WeatherMonitorAddonWindSpeedLabel == null) return;
+            if (WeatherMonitorAddonAuroraLoadingLabel == null) return;
+            if (WeatherMonitorAddonObjectAuroraDissipatingLabel == null) return;
 
             Enable(false);
 
-            WeatherMonitorHeaderLabel.text          = "Weather Monitor";
-            WeatherMonitorHeaderLabel.capsLock      = true;
+            WeatherMonitorAddonAuroraValue = GameManager.GetAuroraManager().GetNormalizedAlpha();
 
-            WeatherMonitorWeatherLabel.text         = Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()));
-            WeatherMonitorWindSpeedLabel.text       = string.Format("{0} {1}", WeatherUtilities.GetNormalizedSpeed(GameManager.GetWindComponent().GetSpeedMPH()).ToString(), WeatherUtilities.GetCurrentUnitsString(1));
-
-            WeatherMonitorAuroraLabel.text          = "Aurora Fully Active";
-            WeatherMonitorAuroraLabel.color         = Color.red;
+            WeatherMonitorAddonWeatherLabel.text                    = Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()));
+            WeatherMonitorAddonWindSpeedLabel.text                  = string.Format("{0} {1}", WeatherUtilities.GetNormalizedSpeed(GameManager.GetWindComponent().GetSpeedMPH()), WeatherUtilities.GetCurrentUnitsString(1));
+            WeatherMonitorAddonAuroraLoadingLabel.text              = string.Format("Aurora Loading {0:P2}", GameManager.GetAuroraManager().GetNormalizedAlpha());
+            WeatherMonitorAddonObjectAuroraDissipatingLabel.text    = string.Format("Aurora Dissipating {0:P2}", GameManager.GetAuroraManager().GetNormalizedAlpha());
 
             Enable(CanEnable());
             HandleAuroraAlert();
@@ -111,9 +180,11 @@
         /// <param name="enabled"></param>
         public void Enable(bool enabled)
         {
-            NGUITools.SetActive(WeatherMonitorHeader, enabled);
-            NGUITools.SetActive(WeatherMonitorWeather, enabled);
-            NGUITools.SetActive(WeatherMonitorWindSpeed, enabled);
+            //WeatherMonitorAddonCanvas.enabled = enabled;
+
+            NGUITools.SetActive(WeatherMonitorAddonObjectHeader, enabled);
+            NGUITools.SetActive(WeatherMonitorAddonObjectWeather, enabled);
+            NGUITools.SetActive(WeatherMonitorAddonObjectWindSpeed, enabled);
         }
 
         /// <summary>
@@ -136,13 +207,29 @@
         {
             if (AttachedObject == null) return;
 
-            if (GameManager.GetAuroraManager().m_IsElectrolizerActive)
+            NGUITools.SetActive(WeatherMonitorAddonObjectAuroraLoading, false);
+            NGUITools.SetActive(WeatherMonitorAddonObjectAuroraDissipating, false);
+            NGUITools.SetActive(WeatherMonitorAddonObjectAurora, false);
+
+            if (WeatherUtilities.IsAuroraFullyActive(GameManager.GetAuroraManager()))
             {
-                NGUITools.SetActive(WeatherMonitorAurora, AttachedObject.activeSelf);
+                NGUITools.SetActive(WeatherMonitorAddonObjectAuroraLoading, false);
+                NGUITools.SetActive(WeatherMonitorAddonObjectAuroraDissipating, false);
+
+                NGUITools.SetActive(WeatherMonitorAddonObjectAurora, AttachedObject.activeSelf);
             }
-            else
+            else if (GameManager.GetAuroraManager().GetNormalizedAlpha() > 0.15 && GameManager.GetAuroraManager().GetNormalizedAlpha() < 0.95)
             {
-                NGUITools.SetActive(WeatherMonitorAurora, false);
+                NGUITools.SetActive(WeatherMonitorAddonObjectAurora, false);
+
+                if (WeatherMonitorAddonAuroraValue < GameManager.GetAuroraManager().GetNormalizedAlpha())
+                {
+                    NGUITools.SetActive(WeatherMonitorAddonObjectAuroraLoading, AttachedObject.activeSelf);
+                }
+                else if (WeatherMonitorAddonAuroraValue > GameManager.GetAuroraManager().GetNormalizedAlpha())
+                {
+                    NGUITools.SetActive(WeatherMonitorAddonObjectAuroraDissipating, AttachedObject.activeSelf);
+                }
             }
         }
 
@@ -206,7 +293,7 @@
         /// <param name="parent"></param>
         public void SetupLabel(
             UILabel label,
-            UIFont font,
+            string text,
             FontStyle fontStyle,
             UILabel.Crispness crispness,
             NGUIText.Alignment alignment,
@@ -214,21 +301,23 @@
             bool mulitLine,
             int depth,
             int fontSize,
-            Transform parent)
+            Color color,
+            bool capsLock)
         {
-            label.ambigiousFont         = font;
-            label.bitmapFont            = font;
-            label.font                  = font;
-            label.fontStyle             = fontStyle;
-            label.keepCrispWhenShrunk   = crispness;
-            label.alignment             = alignment;
-            label.overflowMethod        = overflow;
-            label.multiLine             = mulitLine;
-            label.depth                 = depth;
-            label.fontSize              = fontSize;
-            label.gameObject.transform.SetParent(parent);
+            label.text                      = text;
+            label.ambigiousFont             = AmbigiusFont;
+            label.bitmapFont                = BitmapFont;
+            label.font                      = Font;
 
-            label.gameObject.layer      = vp_Layer.UI;
+            label.fontStyle                 = fontStyle;
+            label.keepCrispWhenShrunk       = crispness;
+            label.alignment                 = alignment;
+            label.overflowMethod            = overflow;
+            label.multiLine                 = mulitLine;
+            label.depth                     = depth;
+            label.fontSize                  = fontSize;
+            label.color                     = color;
+            label.capsLock                  = capsLock;
         }
     }
 }

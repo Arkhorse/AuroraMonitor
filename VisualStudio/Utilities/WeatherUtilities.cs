@@ -159,5 +159,11 @@ namespace AuroraMonitor.Utilities
             float num1 = Mathf.Ceil(num);
             return (int)num1;
         }
+
+		public static bool IsAuroraFullyActive(AuroraManager auroraManager)
+		{
+			if (auroraManager.GetNormalizedAlpha() >= auroraManager.m_FullyActiveValue) return true;
+			return false;
+		}
     }
 }

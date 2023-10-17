@@ -31,7 +31,7 @@ namespace AuroraMonitor.Notifications
         [JsonInclude]
         public float WindPlayerMult { get; set; }
         [JsonInclude]
-        public int Temperature { get; set; }
+        public float Temperature { get; set; }
     }
 
     public class DayInformation

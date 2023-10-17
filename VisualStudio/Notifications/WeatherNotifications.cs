@@ -78,7 +78,7 @@ namespace AuroraMonitor.Notifications
                 WindAngle           = GameManager.GetWindComponent().GetWindAngleRelativeToPlayer(),
                 WindPlayerMult      = GameManager.GetPlayerMovementComponent().GetWindMovementMultiplier(),
                 WindSpeed           = WeatherUtilities.ConvertMilesKilometerHour(GameManager.GetWindComponent().GetSpeedMPH()),
-                Temperature         = GameManager.GetUniStorm().m_Temperature
+                Temperature         = GameManager.GetWeatherComponent().GetBaseTemperature()
             };
 
             Main.MonitorData.Prev = GameManager.GetUniStorm().m_CurrentWeatherStage;

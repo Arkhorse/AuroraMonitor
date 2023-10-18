@@ -77,6 +77,7 @@ namespace AuroraMonitor
 
             if (SceneUtilities.IsSceneBase(sceneName) && !SceneUtilities.IsSceneAdditive(sceneName))
             {
+                Settings.Instance.OnLoadConfirm();
                 BaseLoaded = true;
                 BaseSceneName = sceneName;
 
@@ -116,8 +117,6 @@ namespace AuroraMonitor
                 WeatherNotifications.MaybeDisplayWeatherNotification();
             }
             catch { }
-
-            //WeatherNotifications.UpdateFirstAidPanel();
         }
     }
 }

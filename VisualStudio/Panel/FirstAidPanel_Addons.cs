@@ -27,11 +27,6 @@
         internal GameObject? WeatherMonitorAddonObjectWindSprite { get; set; }
         #endregion
         #region SubObjects
-        internal Canvas? WeatherMonitorAddonCanvas { get; set; }
-        //internal RectTransform? WeatherMonitorAddonRectTransform { get; set; }
-
-        //internal Image? WeatherMonitorAddonImage { get; set; }
-
         internal UILabel? WeatherMonitorAddonHeaderLabel { get; set; }
         internal UILabel? WeatherMonitorAddonWeatherLabel { get; set; }
         internal UILabel? WeatherMonitorAddonWindSpeedLabel { get; set; }
@@ -56,6 +51,7 @@
         internal Vector3 WeatherMonitorAddonWindSpritePosition { get; set; }    = new(440, -160,0);
         #endregion
 
+        internal UIAtlas? BaseAtlas { get; set; }
 
         public void Awake()
         {
@@ -76,6 +72,7 @@
             AmbigiusFont                                = InterfaceManager.GetPanel<Panel_FirstAid>().m_AirTempLabel.ambigiousFont;
             BitmapFont                                  = InterfaceManager.GetPanel<Panel_FirstAid>().m_AirTempLabel.bitmapFont;
             Font                                        = InterfaceManager.GetPanel<Panel_FirstAid>().m_AirTempLabel.font;
+            BaseAtlas                                   = InterfaceManager.GetPanel<Panel_HUD>().m_AltFireGamepadButtonSprite.atlas;
 
             WeatherMonitorAddonObject.transform.SetParent(AttachedObject.transform);
 
@@ -150,7 +147,9 @@
 
             Enable(false);
             if (!InterfaceManager.GetPanel<Panel_FirstAid>().enabled) return;
+
             WindDirection = WeatherUtilities.GetWindDirection();
+            WeatherMonitorAddonAuroraValue = GameManager.GetAuroraManager().GetNormalizedAlpha();
 
             if (WeatherMonitorAddonWeatherSprite != null)
             {
@@ -161,29 +160,26 @@
                 }
             }
 
-            WeatherMonitorAddonAuroraValue = GameManager.GetAuroraManager().GetNormalizedAlpha();
-
             WeatherMonitorAddonWeatherLabel.text                    = Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()));
             WeatherMonitorAddonWindSpeedLabel.text                  = string.Format("{0} {1}", WeatherUtilities.GetNormalizedSpeed(GameManager.GetWindComponent().GetSpeedMPH()), WeatherUtilities.GetCurrentUnitsString(1));
             WeatherMonitorAddonAuroraLoadingLabel.text              = string.Format("Aurora Loading {0:P2}", GameManager.GetAuroraManager().GetNormalizedAlpha());
             WeatherMonitorAddonObjectAuroraDissipatingLabel.text    = string.Format("Aurora Dissipating {0:P2}", GameManager.GetAuroraManager().GetNormalizedAlpha());
 
-            Enable(CanEnable());
-            HandleAuroraAlert();
-
             if (WeatherMonitorAddonWeatherSprite != null)
             {
                 WeatherMonitorAddonWeatherSprite.height = 64;
                 WeatherMonitorAddonWeatherSprite.width = 64;
+                HandleAuroraAlert();
             }
 
             if (WeatherMonitorAddonWindSprite != null)
             {
-                WeatherMonitorAddonWindSprite.height = 64;
-                WeatherMonitorAddonWindSprite.width = 64;
-                WeatherMonitorAddonWindSprite.color = Color.white;
+                WeatherMonitorAddonWindSprite.height    = 64;
+                WeatherMonitorAddonWindSprite.width     = 64;
                 HandleWindDirection(WeatherMonitorAddonWindSprite);
             }
+
+            Enable(CanEnable());
         }
 
         /// <summary>
@@ -192,8 +188,6 @@
         /// <param name="enabled"></param>
         public void Enable(bool enabled)
         {
-            //WeatherMonitorAddonCanvas.enabled = enabled;
-
             NGUITools.SetActive(WeatherMonitorAddonObjectHeader, enabled);
             NGUITools.SetActive(WeatherMonitorAddonObjectWeather, enabled);
             NGUITools.SetActive(WeatherMonitorAddonObjectWindSpeed, enabled);
@@ -241,16 +235,21 @@
         // Works
         public void HandleWindDirection(UISprite windDirectionSprite)
         {
-            // icoMap_Generic | Confirmed as right icon
             if (AttachedObject == null) return;
             NGUITools.SetActive(WeatherMonitorAddonObjectWindSprite, AttachedObject.activeSelf);
 
+            // Need to use the negative of the result as otherwise its in the wrong direction
             windDirectionSprite.transform.eulerAngles = new(0, 0, -GameManager.GetWindComponent().GetWindAngleRelativeToPlayer());
         }
 
+        /// <summary>
+        /// Gets if the Aurora is either loading or dissipating
+        /// </summary>
         public bool AuroraChanging()
         {
-            return GameManager.GetAuroraManager().GetNormalizedAlpha() > WeatherMonitorAddonAuroraMinimum && GameManager.GetAuroraManager().GetNormalizedAlpha() < GameManager.GetAuroraManager().m_FullyActiveValue;
+            bool min = GameManager.GetAuroraManager().GetNormalizedAlpha() > WeatherMonitorAddonAuroraMinimum;
+            bool max = GameManager.GetAuroraManager().GetNormalizedAlpha() < GameManager.GetAuroraManager().m_FullyActiveValue;
+            return min && max;
         }
     }
 }

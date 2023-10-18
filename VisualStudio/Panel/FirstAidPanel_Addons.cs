@@ -1,7 +1,4 @@
-﻿using UnityEngine.UI;
-using static Il2CppTMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-
-namespace AuroraMonitor.Panel
+﻿namespace AuroraMonitor.Panel
 {
     [RegisterTypeInIl2Cpp]
     public class FirstAidPanel_Addons : MonoBehaviour

@@ -1,4 +1,4 @@
-﻿namespace AuroraMonitor.Panel
+﻿namespace AuroraMonitor.GUI.Addons
 {
     [RegisterTypeInIl2Cpp]
     public class FirstAidPanel_Addons : MonoBehaviour

@@ -1,5 +1,5 @@
 ﻿using AuroraMonitor.JSON;
-using AuroraMonitor.Utilities.Enums;
+using AuroraMonitor.Utilities.Logger;
 
 namespace AuroraMonitor.Notifications
 {
@@ -23,10 +23,9 @@ namespace AuroraMonitor.Notifications
         /// <seealso cref="DisplayWeatherNotification"/>
         public static void MaybeDisplayWeatherNotification(bool force = false)
         {
-            if (GameManager.GetPlayerManagerComponent() == null) return;
-            if (GameManager.GetPlayerManagerComponent().m_ControlMode == PlayerControlMode.Locked) return;
+            if (!Main.IsPlayerAvailable(GameManager.GetPlayerManagerComponent())) return;
 
-            if ( (SceneUtilities.IsValidSceneForWeather(GameManager.m_ActiveScene) && GameManager.GetUniStorm().m_SecondsSinceLastWeatherChange >= Settings.Instance.WeatherNotificationsDelay ) || force)
+            if ( (SceneUtilities.IsValidSceneForWeather(GameManager.m_ActiveScene) && GameManager.GetUniStorm().m_SecondsSinceLastWeatherChange >= Main.SettingsInstance.WeatherNotificationsDelay ) || force)
             {
                 if (Main.MonitorData != null && (Main.MonitorData.Prev != GameManager.GetUniStorm().m_CurrentWeatherStage) || force)
                 {
@@ -36,7 +35,7 @@ namespace AuroraMonitor.Notifications
                     if (BuildWeatherData())
                     {
                         DisplayWeatherNotification();
-                        //UpdateFirstAidPanel();
+                        SaveWeatherData();
                     }
                 }
             }
@@ -51,7 +50,9 @@ namespace AuroraMonitor.Notifications
                 WeatherUtilities.GetCurrentWeatherIcon(GameManager.GetUniStorm())!,
                 "Weather Monitor",
                 $"{message}",
-                Settings.Instance.WeatherNotificationsTime);
+                Main.SettingsInstance.WeatherNotificationsTime);
+
+            ComplexLogger.Log<Main>(FlaggedLoggingLevel.Debug, "Weather notification displayed");
         }
 
         private static bool BuildWeatherData()
@@ -89,12 +90,15 @@ namespace AuroraMonitor.Notifications
             }
             else
             {
+                ComplexLogger.Log<Main>(FlaggedLoggingLevel.Debug, "New weather data added to database");
                 Main.MonitorData.m_WeatherInformation.Add(weatherInformation);
-
-                JsonFile.Save<WeatherMonitorData>(Main.MonitorMainConfig, Main.MonitorData);
-
                 return true;
             }
+        }
+
+        private static void SaveWeatherData()
+        {
+            JsonFile.Save<WeatherMonitorData>(Main.MonitorMainConfig, Main.MonitorData);
         }
     }
 }

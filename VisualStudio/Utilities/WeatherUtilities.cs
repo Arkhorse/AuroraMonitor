@@ -1,5 +1,6 @@
 ﻿using AuroraMonitor.Notifications;
 using AuroraMonitor.Utilities.Enums;
+using Il2Cpp;
 
 namespace AuroraMonitor.Utilities
 {
@@ -7,57 +8,27 @@ namespace AuroraMonitor.Utilities
 	{
 		public static List<GearMessage.GearMessageInfo> WeatherPresets { get; } = new()
 		{
-			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_WeatherHeavyFog") { m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_MeltSnow", "Weather Monitor", "GAMEPLAY_WeatherLightSnow") { m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_MeltSnow", "Weather Monitor", "GAMEPLAY_WeatherHeavySnow") { m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_PartlyCloudy") { m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_WeatherClear"){ m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_Cloudy") { m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_WeatherLightFog") { m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_almanac_hurricane", "Weather Monitor", "GAMEPLAY_WeatherBlizzard") { m_Color = Color.red, m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_Warning", "Weather Monitor", "GAMEPLAY_know_th_AuroraObservations1_Title") { m_Color = Color.yellow, m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo(GetToxicFogIcon(), "Weather Monitor", "GAMEPLAY_AfflictionToxicFog") { m_Color = Color.red, m_DisplayTime = Settings.Instance.WeatherNotificationsTime },
-			new GearMessage.GearMessageInfo("ico_Warning", "Weather Monitor", "GAMEPLAY_ElectrostaticFog") { m_Color = Color.red, m_DisplayTime = Settings.Instance.WeatherNotificationsTime }
+			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_WeatherHeavyFog") { m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_MeltSnow", "Weather Monitor", "GAMEPLAY_WeatherLightSnow") { m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_MeltSnow", "Weather Monitor", "GAMEPLAY_WeatherHeavySnow") { m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_PartlyCloudy") { m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_WeatherClear"){ m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_Cloudy") { m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_journal", "Weather Monitor", "GAMEPLAY_WeatherLightFog") { m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_almanac_hurricane", "Weather Monitor", "GAMEPLAY_WeatherBlizzard") { m_Color = Color.red, m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_Warning", "Weather Monitor", "GAMEPLAY_know_th_AuroraObservations1_Title") { m_Color = Color.yellow, m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo(GetToxicFogIcon(), "Weather Monitor", "GAMEPLAY_AfflictionToxicFog") { m_Color = Color.red, m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime },
+			new GearMessage.GearMessageInfo("ico_Warning", "Weather Monitor", "GAMEPLAY_ElectrostaticFog") { m_Color = Color.red, m_DisplayTime = Main.SettingsInstance.WeatherNotificationsTime }
 		};
 
 		public static string? GetCurrentWeatherLoc(UniStormWeatherSystem uniStorm)
 		{
-			return uniStorm.m_CurrentWeatherStage switch
-			{
-				WeatherStage.DenseFog           => "GAMEPLAY_WeatherHeavyFog",
-				WeatherStage.LightSnow          => "GAMEPLAY_WeatherLightSnow",
-				WeatherStage.HeavySnow          => "GAMEPLAY_WeatherHeavySnow",
-				WeatherStage.PartlyCloudy       => "GAMEPLAY_PartlyCloudy",
-				WeatherStage.Clear              => "GAMEPLAY_WeatherClear",
-				WeatherStage.Cloudy             => "GAMEPLAY_Cloudy",
-				WeatherStage.LightFog           => "GAMEPLAY_WeatherLightFog",
-				WeatherStage.Blizzard           => "GAMEPLAY_WeatherBlizzard",
-				WeatherStage.ClearAurora        => "GAMEPLAY_know_th_AuroraObservations1_Title",    // Aurora Borealis
-				WeatherStage.ToxicFog           => "GAMEPLAY_AfflictionToxicFog",                   // Toxic Fog - only darkwalker challenge as of 2.22
-				WeatherStage.ElectrostaticFog   => "GAMEPLAY_ElectrostaticFog",                     // Glimmer Fog
-				WeatherStage.Undefined          => null,
-				_ => null,
-			};
+			return GetWeatherLoc(uniStorm.m_CurrentWeatherStage);
 		}
 
 		public static string? GetCurrentWeatherIcon(UniStormWeatherSystem uniStorm)
 		{
-			return uniStorm.m_CurrentWeatherStage switch
-			{
-				WeatherStage.DenseFog           => "ico_journal",
-				WeatherStage.LightSnow          => "ico_MeltSnow",
-				WeatherStage.HeavySnow          => "ico_MeltSnow",
-				WeatherStage.PartlyCloudy       => "ico_journal",
-				WeatherStage.Clear              => "ico_journal",
-				WeatherStage.Cloudy             => "ico_journal",
-				WeatherStage.LightFog           => "ico_journal",
-				WeatherStage.Blizzard           => "ico_almanac_hurricane",
-				WeatherStage.ClearAurora        => "ico_Warning",       // Aurora Borealis
-				WeatherStage.ToxicFog           => GetToxicFogIcon(),   // Toxic Fog - only darkwalker challenge as of 2.22
-				WeatherStage.ElectrostaticFog   => "ico_journal",       // Glimmer Fog
-				WeatherStage.Undefined          => null,
-				_ => null,
-			};
+			return GetWeatherSpriteName(uniStorm.m_CurrentWeatherStage);
 		}
 
 		public static GearMessage.GearMessageInfo? GetCurrentMessage( UniStormWeatherSystem uniStorm )
@@ -81,7 +52,7 @@ namespace AuroraMonitor.Utilities
 		}
 		public static string? GetToxicFogIcon()
 		{
-			return Settings.Instance.fogImages switch
+			return Main.SettingsInstance.fogImages switch
 			{
 				ToxicFogImages.l1 => "ico_toxicFog_L1",
 				ToxicFogImages.l2 => "ico_toxicFog_L2",
@@ -121,7 +92,7 @@ namespace AuroraMonitor.Utilities
 
         public static float GetCurrentUnits(float input)
         {
-            return Settings.Instance.UnitsToUse switch
+            return Main.SettingsInstance.UnitsToUse switch
             {
                 UnitUse.Metric => WeatherUtilities.ConvertMilesKilometerHour(input),
                 UnitUse.Scientific => WeatherUtilities.ConvertMilesMetersSecond(input),
@@ -133,7 +104,7 @@ namespace AuroraMonitor.Utilities
         {
             if (section == 0)
             {
-                return Settings.Instance.UnitsToUse switch
+                return Main.SettingsInstance.UnitsToUse switch
                 {
                     UnitUse.Metric => "KM/H",
                     UnitUse.Scientific => "M/S",
@@ -142,7 +113,7 @@ namespace AuroraMonitor.Utilities
             }
             else if (section == 1)
             {
-                return Settings.Instance.FirstAidScreen_UnitsToUse switch
+                return Main.SettingsInstance.FirstAidScreen_UnitsToUse switch
                 {
                     UnitUse.Metric => "KM/H",
                     UnitUse.Scientific => "M/S",
@@ -165,5 +136,45 @@ namespace AuroraMonitor.Utilities
 			if (auroraManager.GetNormalizedAlpha() >= auroraManager.m_FullyActiveValue) return true;
 			return false;
 		}
-    }
+
+		public static string? GetWeatherLoc(WeatherStage stage)
+		{
+            return stage switch
+            {
+                WeatherStage.DenseFog			=> "GAMEPLAY_WeatherHeavyFog",
+                WeatherStage.LightSnow			=> "GAMEPLAY_WeatherLightSnow",
+                WeatherStage.HeavySnow			=> "GAMEPLAY_WeatherHeavySnow",
+                WeatherStage.PartlyCloudy		=> "GAMEPLAY_PartlyCloudy",
+                WeatherStage.Clear				=> "GAMEPLAY_WeatherClear",
+                WeatherStage.Cloudy				=> "GAMEPLAY_Cloudy",
+                WeatherStage.LightFog			=> "GAMEPLAY_WeatherLightFog",
+                WeatherStage.Blizzard			=> "GAMEPLAY_WeatherBlizzard",
+                WeatherStage.ClearAurora		=> "GAMEPLAY_know_th_AuroraObservations1_Title",    // Aurora Borealis
+                WeatherStage.ToxicFog			=> "GAMEPLAY_AfflictionToxicFog",                   // Toxic Fog - only darkwalker challenge as of 2.22
+                WeatherStage.ElectrostaticFog	=> "GAMEPLAY_ElectrostaticFog",                     // Glimmer Fog
+                WeatherStage.Undefined			=> null,
+                _ => null,
+            };
+        }
+
+		public static string? GetWeatherSpriteName(WeatherStage stage)
+		{
+			return stage switch
+			{
+				WeatherStage.DenseFog           => "ico_journal",
+				WeatherStage.LightSnow          => "ico_MeltSnow",
+				WeatherStage.HeavySnow          => "ico_MeltSnow",
+				WeatherStage.PartlyCloudy       => "ico_journal",
+				WeatherStage.Clear              => "ico_journal",
+				WeatherStage.Cloudy             => "ico_journal",
+				WeatherStage.LightFog           => "ico_journal",
+				WeatherStage.Blizzard           => "ico_almanac_hurricane",
+				WeatherStage.ClearAurora        => "ico_Warning",       // Aurora Borealis
+				WeatherStage.ToxicFog           => GetToxicFogIcon(),   // Toxic Fog - only darkwalker challenge as of 2.22
+				WeatherStage.ElectrostaticFog   => "ico_journal",       // Glimmer Fog
+				WeatherStage.Undefined          => null,
+				_ => null,
+			};
+		}
+	}
 }

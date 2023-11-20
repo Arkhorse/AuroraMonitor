@@ -1,6 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AuroraMonitor.Notifications
+using AuroraMonitor.Utilities.Exceptions;
+
+namespace AuroraMonitor.Data
 {
     public class WeatherMonitorData
     {
@@ -17,11 +19,11 @@ namespace AuroraMonitor.Notifications
     public class WeatherInformation
     {
         [JsonInclude]
-        [JsonPropertyName("DayInformation")]
+        [JsonPropertyName("Day Information")]
         public DayInformation? m_DayInformation { get; set; }
 
         [JsonInclude]
-        [JsonPropertyName("WeatherStage")]
+        [JsonPropertyName("Weather Stage")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public WeatherStage m_WeatherStage { get; set; }
         [JsonInclude]
@@ -43,4 +45,6 @@ namespace AuroraMonitor.Notifications
         [JsonInclude]
         public int Minute { get; set; }
     }
+
+
 }

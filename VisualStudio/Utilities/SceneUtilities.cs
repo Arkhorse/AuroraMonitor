@@ -111,7 +111,7 @@
             return true;
         }
 
-        public static bool IsValidSceneForWeather(string sceneName)
+        public static bool IsValidSceneForWeather(string sceneName, bool IndoorOverride)
         {
 
             bool flag = ((IsSceneBase(sceneName)) && !(IsSceneAdditive(sceneName)));
@@ -120,7 +120,7 @@
             {
                 return true;
             }
-            else if (GameManager.GetWeatherComponent().IsIndoorScene() && Settings.Instance.WeatherNotificationsIndoors)
+            else if (GameManager.GetWeatherComponent().IsIndoorScene() && IndoorOverride)
             {
                 return true;
             }

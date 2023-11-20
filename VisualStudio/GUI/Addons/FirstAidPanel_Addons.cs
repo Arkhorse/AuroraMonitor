@@ -3,6 +3,7 @@
     [RegisterTypeInIl2Cpp]
     public class FirstAidPanel_Addons : MonoBehaviour
     {
+        public FirstAidPanel_Addons() { }
         public FirstAidPanel_Addons(IntPtr intPtr) : base(intPtr) { }
 
         #region Variables

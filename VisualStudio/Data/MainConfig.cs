@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AuroraMonitor.Data
 {
-    public class MainConfig : IDataBase
+    public class MainConfig
     {
         public bool BaseLoaded { get; set; }
         public bool SandboxLoaded { get; set; }

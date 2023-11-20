@@ -1,13 +1,16 @@
-global using AuroraUtilities = AuroraMonitor.Utilities.Aurora.AuroraUtilities;
-global using WeatherNotifications = AuroraMonitor.Notifications.WeatherNotifications;
-global using WeatherUtilities = AuroraMonitor.Utilities.WeatherUtilities;
+global using AuroraMonitor.Utilities.Aurora;
+global using AuroraMonitor.Data;
+global using AuroraMonitor.GUI;
+global using AuroraMonitor.GUI.Addons;
+global using AuroraMonitor.JSON;
+global using AuroraMonitor.Notifications;
+global using AuroraMonitor.Patches;
 global using AuroraMonitor.Utilities;
 global using AuroraMonitor.Utilities.Enums;
-
-using AuroraMonitor.Notifications;
-using MelonLoader.Utils;
-using AuroraMonitor.JSON;
-using UnityEngine;
+global using AuroraMonitor.Utilities.Exceptions;
+global using MelonLoader.Utils;
+using AuroraMonitor.ModSettings;
+using AuroraMonitor.Utilities.Logger;
 
 namespace AuroraMonitor
 {
@@ -15,38 +18,24 @@ namespace AuroraMonitor
     {
         public static string MonitorFolder { get; } = Path.Combine(MelonEnvironment.ModsDirectory, "Monitor");
         public static string MonitorMainConfig { get; } = Path.Combine(MonitorFolder, "main.json");
-        public static bool BaseLoaded { get; set; } = false;
-        public static bool SandboxLoaded { get; set; } = false;
-        public static bool DLC01Loaded { get; set; } = false;
-        public static string BaseSceneName { get; set; } = string.Empty;
-        public static string SandboxSceneName { get; set; } = string.Empty;
-        public static string DLC01SceneName { get; set; } = string.Empty;
-        public static bool ModInitiliated { get; set; } = false;
-        public static WeatherMonitorData? MonitorData { get; set; } = new();
-
-        public static AssetBundle? FirstAidAddons { get; set; }
         public static string Panel_FirstAid_AddonsBundlePath { get; } = "AuroraMonitor.Resources.panel_firstaid_addons";
+
+        public static int GridCellHeight { get; } = 33;
+
+        #region Class Instances
+        public static MainConfig? Config { get; set; }
+        public static WeatherMonitorData? MonitorData { get; set; }
+        public static Settings SettingsInstance { get; set; } = new();
+        #endregion
 
         public override void OnInitializeMelon()
         {
-            if (!Directory.Exists(MonitorFolder))
-            {
-                Directory.CreateDirectory(MonitorFolder);
-            }
-            if (!File.Exists(MonitorMainConfig))
-            {
-                JsonFile.Save<WeatherMonitorData>(MonitorMainConfig, MonitorData);
-            }
-
-            MonitorData = JsonFile.Load<WeatherMonitorData>(MonitorMainConfig);
-            //FirstAidAddons = LoadAssetBundle(Panel_FirstAid_AddonsBundlePath);
+            Setup.Init();
 
             Settings.OnLoad();
             ConsoleCommands.RegisterCommands();
-            if (Settings.Instance.PRINTDEBUGLOG)
-            {
-                Logging.LogStarter();
-            }
+
+            ComplexLogger.Log<Main>(FlaggedLoggingLevel.Information, $"Mod loaded with v{BuildInfo.Version}");
         }
 
         public static AssetBundle LoadAssetBundle(string name)
@@ -63,35 +52,34 @@ namespace AuroraMonitor
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             base.OnSceneWasInitialized(buildIndex, sceneName);
-            if (sceneName == "Empty" || sceneName == "Boot" ) return;
 
-            if (sceneName.StartsWith("MainMenu", StringComparison.InvariantCultureIgnoreCase))
+            if (Config == null) return;
+
+            if (SceneUtilities.IsSceneEmpty(sceneName) || SceneUtilities.IsSceneBoot(sceneName)) return;
+
+            if (SceneUtilities.IsSceneMenu(sceneName))
             {
-                Settings.Instance.OnLoadConfirm();
+                SettingsInstance.OnLoadConfirm();
                 return;
             }
 
-            // only needed if you want to know what the scene name is. The buildIndex is always -1 or 0
-            //if (Settings.Instance.PRINTDEBUGLOG) Logging.Log($"Scene Initialized, name: {sceneName}, index: {buildIndex}");
-
-
             if (SceneUtilities.IsSceneBase(sceneName) && !SceneUtilities.IsSceneAdditive(sceneName))
             {
-                Settings.Instance.OnLoadConfirm();
-                BaseLoaded = true;
-                BaseSceneName = sceneName;
+                SettingsInstance.OnLoadConfirm();
+                Config.BaseLoaded = true;
+                Config.BaseSceneName = sceneName;
 
-                if (Settings.Instance.WeatherNotificationsSceneChange) WeatherNotifications.MaybeDisplayWeatherNotification();
+                if (SettingsInstance.WeatherNotificationsSceneChange) WeatherNotifications.MaybeDisplayWeatherNotification();
             }
-            else if (sceneName.EndsWith("SANDBOX", StringComparison.InvariantCultureIgnoreCase))
+            else if (SceneUtilities.IsSceneSandbox(sceneName))
             {
-                SandboxLoaded = true;
-                SandboxSceneName = sceneName;
+                Config.SandboxLoaded = true;
+                Config.SandboxSceneName = sceneName;
             }
-            else if (sceneName.EndsWith("DLC01", StringComparison.InvariantCultureIgnoreCase))
+            else if (SceneUtilities.IsSceneDLC01(sceneName))
             {
-                DLC01Loaded = true;
-                DLC01SceneName = sceneName;
+                Config.DLC01Loaded = true;
+                Config.DLC01SceneName = sceneName;
             }
         }
 
@@ -100,9 +88,7 @@ namespace AuroraMonitor
             base.OnLateUpdate();
             try
             {
-                string currentScene = GameManager.m_ActiveScene;
-
-                if (currentScene == "Empty" || currentScene == "Boot" || currentScene.StartsWith("MainMenu", StringComparison.InvariantCultureIgnoreCase)) return;
+                if (!SceneUtilities.IsScenePlayable()) return;
             }
             catch { }
 
@@ -117,6 +103,23 @@ namespace AuroraMonitor
                 WeatherNotifications.MaybeDisplayWeatherNotification();
             }
             catch { }
+        }
+
+        /// <summary>
+        /// Checks if the player is currently involved in anything that would make modded actions unwanted
+        /// </summary>
+        /// <param name="PlayerManagerComponent">The current instance of the PlayerManager component, use <see cref="GameManager.GetPlayerManagerComponent()"/></param>
+        /// <returns><c>true</c> if the player isnt dead, in a conversation, locked or in a cinematic</returns>
+        public static bool IsPlayerAvailable(PlayerManager PlayerManagerComponent)
+        {
+            if (PlayerManagerComponent == null) return false;
+
+            bool first      = PlayerManagerComponent.m_ControlMode == PlayerControlMode.Dead;
+            bool second     = PlayerManagerComponent.m_ControlMode == PlayerControlMode.InConversation;
+            bool third      = PlayerManagerComponent.m_ControlMode == PlayerControlMode.Locked;
+            bool fourth     = PlayerManagerComponent.m_ControlMode == PlayerControlMode.InFPCinematic;
+
+            return first && second && third && fourth;
         }
     }
 }

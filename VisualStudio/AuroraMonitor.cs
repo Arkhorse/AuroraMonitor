@@ -26,6 +26,7 @@ namespace AuroraMonitor
         public static MainConfig? Config { get; set; }
         public static WeatherMonitorData? MonitorData { get; set; }
         public static Settings SettingsInstance { get; set; } = new();
+        public static ComplexLogger Logger { get; } = new();
         #endregion
 
         public override void OnInitializeMelon()
@@ -35,7 +36,7 @@ namespace AuroraMonitor
             Settings.OnLoad();
             ConsoleCommands.RegisterCommands();
 
-            ComplexLogger.Log<Main>(FlaggedLoggingLevel.Information, $"Mod loaded with v{BuildInfo.Version}");
+            Logger.Log(FlaggedLoggingLevel.Verbose, $"Mod loaded with v{BuildInfo.Version}");
         }
 
         public static AssetBundle LoadAssetBundle(string name)

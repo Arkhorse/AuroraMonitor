@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using AuroraMonitor.Utilities.Logger;
+using System.Text.Json;
 
 namespace AuroraMonitor.JSON
 {
@@ -20,10 +21,9 @@ namespace AuroraMonitor.JSON
                 JsonSerializer.Serialize<T?>(file, Tinput, options);
                 file.Dispose();
             }
-            catch
+            catch (Exception e)
             {
-                Logging.LogError($"Attempting to save {configFileName} failed");
-                throw;
+                ComplexLogger.Log<Main>(FlaggedLoggingLevel.Critical, $"Attempting to save {configFileName} failed", e);
             }
         }
 
@@ -39,7 +39,7 @@ namespace AuroraMonitor.JSON
             }
             catch
             {
-                Logging.LogError($"Attempting to load {configFileName} failed");
+                ComplexLogger.Log<Main>(FlaggedLoggingLevel.Critical, $"Attempting to load {configFileName} failed");
                 throw;
             }
         }
@@ -53,19 +53,23 @@ namespace AuroraMonitor.JSON
         /// <returns>new class based on file contents</returns>
         public static async Task<T?> LoadAsync<T>(string configFileName, JsonSerializerOptions? options = null)
         {
-            try
-            {
-                options ??= DefaultOptions;
-                await using FileStream file = File.Open(configFileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                T? output = await JsonSerializer.DeserializeAsync<T?>(file, options);
-                await file.DisposeAsync();
-                return output;
-            }
-            catch
-            {
-                Logging.LogError($"Attempting to load the config file failed, file: {configFileName}");
-                throw;
-            }
+            //https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/task-based-asynchronous-programming
+            //Task taskA = Task.Run( () => Console.WriteLine("Hello from taskA."));
+            //https://stackoverflow.com/questions/38423472/what-is-the-difference-between-task-run-and-task-factory-startnew
+            /*
+                in the .NET Framework 4.5 Developer Preview, we’ve introduced the new Task.Run method. This in no way obsoletes Task.Factory.StartNew,
+                but rather should simply be thought of as a quick way to use Task.Factory.StartNew without needing to specify a bunch of parameters.
+                It’s a shortcut. In fact, Task.Run is actually implemented in terms of the same logic used for Task.Factory.StartNew, just passing in
+                some default parameters. When you pass an Action to Task.Run:
+
+                'Task.Run(someAction);'
+
+                it's exactly equivalent to:
+
+                'Task.Factory.StartNew(someAction, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);'
+             */
+
+            return await Task.Run(() => Load<T>(configFileName, options));
         }
 
         /// <summary>
@@ -76,18 +80,23 @@ namespace AuroraMonitor.JSON
         /// <param name="Tinput">an instance of the given class with information filled</param>
         public static async Task SaveAsync<T>(string configFileName, T? Tinput, JsonSerializerOptions? options = null)
         {
-            try
-            {
-                options ??= DefaultOptions;
-                await using FileStream file = File.Open(configFileName, FileMode.Create, FileAccess.Write, FileShare.None);
-                await JsonSerializer.SerializeAsync<T?>(file, Tinput, options);
-                await file.DisposeAsync();
-            }
-            catch
-            {
-                Logging.LogError($"Attempting to save failed");
-                throw;
-            }
+            //https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/task-based-asynchronous-programming
+            //Task taskA = Task.Run( () => Console.WriteLine("Hello from taskA."));
+            //https://stackoverflow.com/questions/38423472/what-is-the-difference-between-task-run-and-task-factory-startnew
+            /*
+                in the .NET Framework 4.5 Developer Preview, we’ve introduced the new Task.Run method. This in no way obsoletes Task.Factory.StartNew,
+                but rather should simply be thought of as a quick way to use Task.Factory.StartNew without needing to specify a bunch of parameters.
+                It’s a shortcut. In fact, Task.Run is actually implemented in terms of the same logic used for Task.Factory.StartNew, just passing in
+                some default parameters. When you pass an Action to Task.Run:
+
+                'Task.Run(someAction);'
+
+                it's exactly equivalent to:
+
+                'Task.Factory.StartNew(someAction, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);'
+             */
+
+            await Task.Run(() => Save<T>(configFileName, Tinput, options));
         }
         #endregion
     }

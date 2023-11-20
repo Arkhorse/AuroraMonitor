@@ -14,120 +14,116 @@ namespace AuroraMonitor.Utilities.Logger
 {
 	public class ComplexLogger
 	{
+		public ComplexLogger() { }
+
 		/// <summary>
 		/// The current logging level. Levels are bitwise added or removed.
 		/// </summary>
-		private static FlaggedLoggingLevel CurrentLevel { get; set; } = new();
-
-		/// <summary>
-		/// Used to retrieve the current level outside this class
-		/// </summary>
-		/// <returns>The currently set flags</returns>
-		public static FlaggedLoggingLevel GetCurrentLevel() => CurrentLevel;
+		public FlaggedLoggingLevel CurrentLevel { get; private set; } = new();
 
 		/// <summary>
 		/// Add a flag to the existing list
 		/// </summary>
 		/// <param name="level">The level to add</param>
-		public static void AddLevel<T>(FlaggedLoggingLevel level) where T : MelonBase
+		public void AddLevel(FlaggedLoggingLevel level)
 		{
 			CurrentLevel |= level;
 
-			Log<T>(FlaggedLoggingLevel.Debug, $"Added flag {level}");
+			Log(FlaggedLoggingLevel.Debug, $"Added flag {level}");
 		}
 
 		/// <summary>
 		/// Remove a flag from the list
 		/// </summary>
 		/// <param name="level">Level to remove</param>
-		public static void RemoveLevel<T>(FlaggedLoggingLevel level) where T : MelonBase
-        {
+		public void RemoveLevel(FlaggedLoggingLevel level)
+		{
 			CurrentLevel &= ~level;
 
-			Log<T>(FlaggedLoggingLevel.Debug, $"Removed flag {level}");
+			Log(FlaggedLoggingLevel.Debug, $"Removed flag {level}");
 		}
 
         /// <summary>
-        /// Print a log if the current level matches the level given. This uses the <see cref="Logging"/> class previously implemented
+        /// Print a log if the current level matches the level given.
         /// </summary>
-		/// <typeparam name="T">The main class to target for the Melon logging instance</typeparam>
         /// <param name="level">The level of this message (NOT the existing the level)</param>
         /// <param name="message">Formatted string to use in this log</param>
         /// <param name="exception">The exception, if applicable, to display</param>
         /// <param name="parameters">Any additional params</param>
         /// <remarks>
-        /// <para>Use <see cref="WriteSeperator{T}(object[])"/> or <see cref="WriteIntraSeparator{T}(string, object[])"/> for seperators</para>
-        /// <para>There is also <see cref="WriteStarter{T}"/> if you require a prebuild startup message to display regardless of user settings (DONT DO THIS)</para>
+        /// <para>Use <see cref="WriteSeperator(object[])"/> or <see cref="WriteIntraSeparator(string, object[])"/> for seperators</para>
+        /// <para>There is also <see cref="WriteStarter"/> if you require a prebuild startup message to display regardless of user settings (DONT DO THIS)</para>
         /// </remarks>
-        public static void Log<T>(FlaggedLoggingLevel level, string message, Exception? exception = null, params object[] parameters) where T : MelonBase
+        public void Log(FlaggedLoggingLevel level, string message, System.Exception? exception = null, params object[] parameters)
 		{
+			//Log(FlaggedLoggingLevel.Trace, $"");
+
 			if (CurrentLevel.HasFlag(level))
 			{
 				switch (level)
 				{
 					case FlaggedLoggingLevel.Trace:
-						Write<T>($"[TRACE] {message}", parameters);
+						Write($"[TRACE] {message}", parameters);
 						break;
 					case FlaggedLoggingLevel.Debug:
-						Write<T>($"[DEBUG] {message}", parameters);
+						Write($"[DEBUG] {message}", parameters);
 						break;
-					case FlaggedLoggingLevel.Information:
-						Write<T>($"[INFO] {message}", parameters);
+					case FlaggedLoggingLevel.Verbose:
+						Write($"[INFO] {message}", parameters);
 						break;
 					case FlaggedLoggingLevel.Warning:
-						Write<T>($"[WARNING] {message}", parameters);
+						Write($"[WARNING] {message}", parameters);
 						break;
 					case FlaggedLoggingLevel.Error:
-						Write<T>($"[ERROR] {message}", parameters);
+						Write($"[ERROR] {message}", parameters);
 						break;
 					case FlaggedLoggingLevel.Critical:
 						if (exception == null)
-							Write<T>($"[CRITICAL] {message}", parameters);
+							Write($"[CRITICAL] {message}", Color.red, FontStyle.Bold, parameters);
 						else
-							WriteException<T>(message, exception, parameters);
+							WriteException(message, exception, parameters);
 						break;
 					default:
-						Log<T>(FlaggedLoggingLevel.Debug, $"The current logging level does not match the given log level, Current: {CurrentLevel}, Given: {level}");
 						break;
 				}
+				return;
 			}
-			else return;
 		}
 
-        /// <summary>
-        /// The base log method
-        /// </summary>
-        /// <param name="message">The formated string to add as the message</param>
-        /// <param name="parameters">Any additional params</param>
-        public static void Write<T>(string message, params object[] parameters) where T : MelonBase
-        {
-            Melon<T>.Logger.Msg(message, parameters);
-        }
-
-        /// <summary>
-        /// Logs a prebuilt startup message
-        /// </summary>
-        public static void WriteStarter<T>() where T : MelonBase
+		/// <summary>
+		/// The base log method
+		/// </summary>
+		/// <param name="message">The formated string to add as the message</param>
+		/// <param name="parameters">Any additional params</param>
+		public void Write(string message, params object[] parameters)
 		{
-            Write<T>($"Mod loaded with v{BuildInfo.Version}");
-        }
+			Melon<Main>.Logger.Msg(message, parameters);
+		}
+
+		/// <summary>
+		/// Logs a prebuilt startup message
+		/// </summary>
+		public void WriteStarter()
+		{
+			Write($"Mod loaded with v{BuildInfo.Version}");
+		}
 		/// <summary>
 		/// Prints a seperator
 		/// </summary>
 		/// <param name="parameters">Any additional params</param>
-		public static void WriteSeperator<T>(params object[] parameters) where T : MelonBase
+		public void WriteSeperator(params object[] parameters)
 		{
-            Write<T>("==============================================================================", parameters);
-        }
+			Write("==============================================================================", parameters);
+		}
 		/// <summary>
 		/// Logs an "Intra Seperator", allowing you to print headers
 		/// </summary>
 		/// <param name="message">The header name. Should be short</param>
 		/// <param name="parameters">Any additional params</param>
-		public static void WriteIntraSeparator<T>(string message, params object[] parameters) where T : MelonBase
+		public void WriteIntraSeparator(string message, params object[] parameters)
 		{
-            Write<T>($"=========================   {message}   =========================", parameters);
-        }
+			Write($"=========================   {message}   =========================", parameters);
+		}
 		/// <summary>
 		/// Prints a log with <c>[EXCEPTION]</c> at the start.
 		/// </summary>
@@ -137,7 +133,7 @@ namespace AuroraMonitor.Utilities.Logger
 		/// <remarks>
 		/// <para>This is done as building the exception otherwise can be tedious</para>
 		/// </remarks>
-		public static void WriteException<T>(string message, Exception? exception, params object[] parameters) where T : MelonBase
+		public void WriteException(string message, System.Exception? exception, params object[] parameters)
 		{
 			StringBuilder sb = new();
 
@@ -147,7 +143,7 @@ namespace AuroraMonitor.Utilities.Logger
 			if (exception != null) sb.AppendLine(exception.Message);
 			else sb.AppendLine("Exception was null");
 
-			Write<T>(sb.ToString(), parameters);
+			Write(sb.ToString(), parameters);
 		}
 	}
 }

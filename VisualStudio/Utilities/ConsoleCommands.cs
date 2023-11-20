@@ -1,4 +1,6 @@
-﻿namespace AuroraMonitor
+﻿using AuroraMonitor.Utilities.Logger;
+
+namespace AuroraMonitor
 {
 	internal class ConsoleCommands
 	{
@@ -6,12 +8,12 @@
 		//{
 		//	Main.Load();
 		//	if (Main.MonitorData.PreviousStages.Count() == 0 ) return;
-		//	Logging.Log( "Previous Weather:" );
+		//	ComplexLogger.Log( "Previous Weather:" );
 		//	var stagecopy = Main.MonitorData.PreviousStages;
 		//	stagecopy.Reverse();
 		//	foreach ( WeatherStage stage in stagecopy )
 		//	{
-		//		Logging.Log( $"\t{stage}" );
+		//		ComplexLogger.Log( $"\t{stage}" );
 		//	}
 		//}
 		/// <summary>
@@ -42,63 +44,66 @@
 			float hoursSinceLastChange              = secondsSinceLastChange / 1440;
 			float minutesSinceLastChange            = secondsSinceLastChange / 60;
 
-			Logging.LogSeperator();
+			Main.Logger.WriteSeperator();
 
-			Logging.LogIntraSeparator( "Time Information" );
+            Main.Logger.WriteIntraSeparator( "Time Information" );
 
-			Logging.Log($"Current Day:                       {uniStorm.GetDayNumber()}");
-			Logging.Log( $"Time of day:                      {time.GetHour()}h:{time.GetMinutes()}m" );
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Current Day:                       {uniStorm.GetDayNumber()}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Time of day:                      {time.GetHour()}h:{time.GetMinutes()}m" );
 
-			Logging.LogIntraSeparator("Weather Information");
+            Main.Logger.WriteIntraSeparator("Weather Information");
 
-			Logging.Log($"Previous Weather:                  {Main.MonitorData!.Prev}");
-			Logging.Log($"UniStorm Previous Weather:         {uniStorm.m_PreviousWeatherStage}");
-			Logging.Log($"Current Weather:                   {uniStorm.GetWeatherStage()}");
-			Logging.Log($"GetCurrentWeatherLoc:              {WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm())}");
-			Logging.Log($"\tResult:                          {Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()))}");
-			Logging.Log($"GetCurrentWeatherIcon:             {WeatherUtilities.GetCurrentWeatherIcon(GameManager.GetUniStorm())}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Previous Weather:                  {Main.MonitorData!.Prev}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"UniStorm Previous Weather:         {uniStorm.m_PreviousWeatherStage}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Current Weather:                   {uniStorm.GetWeatherStage()}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"GetCurrentWeatherLoc:              {WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm())}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"\tResult:                          {Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()))}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"GetCurrentWeatherIcon:             {WeatherUtilities.GetCurrentWeatherIcon(GameManager.GetUniStorm())}");
 
-			//PrintSavedWeatherData();
+            //PrintSavedWeatherData();
 
-			Logging.LogIntraSeparator("Wind Information");
+            Main.Logger.WriteIntraSeparator("Wind Information");
 
-			Logging.Log($"Wind Speed:                        {wind.GetSpeedMPH()}");
-			Logging.Log($"Wind angle:                        {wind.GetWindAngleRelativeToPlayer()}");
-			Logging.Log($"Wind Direction:                    {WeatherUtilities.GetWindDirection()}");
-			Logging.Log($"Wind Mult:                         {GameManager.GetPlayerMovementComponent().GetWindMovementMultiplier()}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind Speed:                        {wind.GetSpeedMPH()}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind angle:                        {wind.GetWindAngleRelativeToPlayer()}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind Direction:                    {WeatherUtilities.GetWindDirection()}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind Mult:                         {GameManager.GetPlayerMovementComponent().GetWindMovementMultiplier()}");
 
-			Logging.LogIntraSeparator("Aurora Information");
+            Main.Logger.WriteIntraSeparator("Aurora Information");
 
 
-			Logging.Log( $"Time since last Aurora:          {(int)daysSincLastChange}:{(int)hoursSinceLastChange}:{(int)minutesSinceLastChange}:{secondsSinceLastChange}" );
-			Logging.Log($"Aurora Early Chance:               {GameManager.GetWeatherComponent().m_AuroraEarlyWindowProbability}");
-			Logging.Log($"Aurora Late Chance:                {GameManager.GetWeatherComponent().m_AuroraLateWindowProbability}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Time since last Aurora:            {(int)daysSincLastChange}:{(int)hoursSinceLastChange}:{(int)minutesSinceLastChange}:{secondsSinceLastChange}" );
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Aurora Early Chance:               {GameManager.GetWeatherComponent().m_AuroraEarlyWindowProbability}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"Aurora Late Chance:                {GameManager.GetWeatherComponent().m_AuroraLateWindowProbability}");
 
-			Logging.Log($"cinematicColours:                  {cinematicColours}");
-			Logging.Log($"numFramesNotActive:                {numFramesNotActive}");
-			Logging.Log($"forcedAuroraNext:                  {forcedAuroraNext}");
-			Logging.Log($"numAuroraSave:                     {numAuroraSave}");
-			Logging.Log($"started:                           {started}");
-			Logging.Log($"fullystarted:                      {fullystarted}");
-			Logging.Log($"boosted:                           {boosted}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"cinematicColours:                  {cinematicColours}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"numFramesNotActive:                {numFramesNotActive}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"forcedAuroraNext:                  {forcedAuroraNext}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"numAuroraSave:                     {numAuroraSave}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"started:                           {started}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"fullystarted:                      {fullystarted}");
+			Main.Logger.Log(FlaggedLoggingLevel.None, $"boosted:                           {boosted}");
 			AuroraUtilities.FetchAuroraColour();
 
-			Logging.LogIntraSeparator("Extra Debug Data");
+            Main.Logger.WriteIntraSeparator("Extra Debug Data");
 
-			Logging.Log($"BaseLoaded:                        {Main.BaseLoaded}");
-			Logging.Log($"SandboxLoaded:                     {Main.SandboxLoaded}");
-			Logging.Log($"DLC01Loaded:                       {Main.DLC01Loaded}");
-			Logging.Log($"Current Scene:                     {GameManager.m_ActiveScene}");
-			Logging.Log($"BaseSceneName:                     {Main.BaseSceneName}");
-			Logging.Log($"SandboxSceneName:                  {Main.SandboxSceneName}");
-			Logging.Log($"DLC01SceneName:                    {Main.DLC01SceneName}");
+			if (Main.Config != null)
+			{
+                Main.Logger.Log(FlaggedLoggingLevel.None, $"BaseLoaded:                        {Main.Config.BaseLoaded}");
+                Main.Logger.Log(FlaggedLoggingLevel.None, $"SandboxLoaded:                     {Main.Config.SandboxLoaded}");
+                Main.Logger.Log(FlaggedLoggingLevel.None, $"DLC01Loaded:                       {Main.Config.DLC01Loaded}");
+                Main.Logger.Log(FlaggedLoggingLevel.None, $"Current Scene:                     {GameManager.m_ActiveScene}");
+                Main.Logger.Log(FlaggedLoggingLevel.None, $"BaseSceneName:                     {Main.Config.BaseSceneName}");
+                Main.Logger.Log(FlaggedLoggingLevel.None, $"SandboxSceneName:                  {Main.Config.SandboxSceneName}");
+                Main.Logger.Log(FlaggedLoggingLevel.None, $"DLC01SceneName:                    {Main.Config.DLC01SceneName}");
+            }
 
-			Logging.LogSeperator();
+            Main.Logger.WriteSeperator();
 
-			//Logging.Log($"");
-		}
+            //Main.Logger.Log(FlaggedLoggingLevel.None, $"");
+        }
 
-		public static void ForceDisplay()
+        public static void ForceDisplay()
 		{
 			WeatherNotifications.MaybeDisplayWeatherNotification();
 		}

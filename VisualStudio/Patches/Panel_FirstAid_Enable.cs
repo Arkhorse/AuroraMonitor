@@ -1,9 +1,4 @@
-﻿using AuroraMonitor.Panel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AuroraMonitor.Utilities.Logger;
 
 namespace AuroraMonitor.Patches
 {
@@ -18,6 +13,8 @@ namespace AuroraMonitor.Patches
             {
                 __instance.gameObject.AddComponent<FirstAidPanel_Addons>();
                 WasInit = true;
+
+                Main.Logger.Log(FlaggedLoggingLevel.Debug, "Added FirstAidPanel_Addons to Panel_FirstAid");
             }
         }
     }

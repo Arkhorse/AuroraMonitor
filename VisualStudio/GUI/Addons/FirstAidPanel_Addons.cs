@@ -200,7 +200,7 @@
         /// <returns></returns>
         public bool CanEnable()
         {
-            if (Settings.Instance.FirstAidScreen_Enabled)
+            if (Main.SettingsInstance.FirstAidScreen_Enabled)
             {
                 if (AttachedObject != null && AttachedObject.activeSelf)
                 {

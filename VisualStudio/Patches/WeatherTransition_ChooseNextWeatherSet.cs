@@ -24,7 +24,7 @@
                 _ => null,
             };
             if (nextWeather == null) return;
-            Utilities.AuroraMonitorMessage($"Weather Update: {Localization.Get(nextWeather)}", Settings.Instance.WeatherNotificationsTime );
+            Utilities.AuroraMonitorMessage($"Weather Update: {Localization.Get(nextWeather)}", Settings.Main.SettingsInstance.WeatherNotificationsTime );
         }
     }
 }

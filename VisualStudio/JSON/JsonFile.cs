@@ -23,7 +23,7 @@ namespace AuroraMonitor.JSON
             }
             catch (Exception e)
             {
-                ComplexLogger.Log<Main>(FlaggedLoggingLevel.Critical, $"Attempting to save {configFileName} failed", e);
+                Main.Logger.Log(FlaggedLoggingLevel.Critical, $"Attempting to save {configFileName} failed", e);
             }
         }
 
@@ -39,7 +39,7 @@ namespace AuroraMonitor.JSON
             }
             catch
             {
-                ComplexLogger.Log<Main>(FlaggedLoggingLevel.Critical, $"Attempting to load {configFileName} failed");
+                Main.Logger.Log(FlaggedLoggingLevel.Critical, $"Attempting to load {configFileName} failed");
                 throw;
             }
         }

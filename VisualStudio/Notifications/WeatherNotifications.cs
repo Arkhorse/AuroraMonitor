@@ -25,7 +25,7 @@ namespace AuroraMonitor.Notifications
         {
             if (!Main.IsPlayerAvailable(GameManager.GetPlayerManagerComponent())) return;
 
-            if ( (SceneUtilities.IsValidSceneForWeather(GameManager.m_ActiveScene) && GameManager.GetUniStorm().m_SecondsSinceLastWeatherChange >= Main.SettingsInstance.WeatherNotificationsDelay ) || force)
+            if ( (SceneUtilities.IsValidSceneForWeather(GameManager.m_ActiveScene, Main.SettingsInstance.WeatherNotificationsIndoors) && GameManager.GetUniStorm().m_SecondsSinceLastWeatherChange >= Main.SettingsInstance.WeatherNotificationsDelay ) || force)
             {
                 if (Main.MonitorData != null && (Main.MonitorData.Prev != GameManager.GetUniStorm().m_CurrentWeatherStage) || force)
                 {
@@ -52,7 +52,7 @@ namespace AuroraMonitor.Notifications
                 $"{message}",
                 Main.SettingsInstance.WeatherNotificationsTime);
 
-            ComplexLogger.Log<Main>(FlaggedLoggingLevel.Debug, "Weather notification displayed");
+            Main.Logger.Log(FlaggedLoggingLevel.Debug, "Weather notification displayed");
         }
 
         private static bool BuildWeatherData()
@@ -90,7 +90,7 @@ namespace AuroraMonitor.Notifications
             }
             else
             {
-                ComplexLogger.Log<Main>(FlaggedLoggingLevel.Debug, "New weather data added to database");
+                Main.Logger.Log(FlaggedLoggingLevel.Debug, "New weather data added to database");
                 Main.MonitorData.m_WeatherInformation.Add(weatherInformation);
                 return true;
             }

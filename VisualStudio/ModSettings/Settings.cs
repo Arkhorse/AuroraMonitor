@@ -124,7 +124,7 @@ namespace AuroraMonitor.ModSettings
 		[Name("Debug")]
 		public bool Debug			= false;
 
-		[Name("Information")]
+		[Name("Verbose")]
 		public bool Information		= false;
 
 		[Name("Warning")]
@@ -179,34 +179,34 @@ namespace AuroraMonitor.ModSettings
 		public void OnLoadConfirm()
 		{
 			if (Main.SettingsInstance.Trace) 
-				ComplexLogger.AddLevel<Main>(FlaggedLoggingLevel.Trace);
+				Main.Logger.AddLevel(FlaggedLoggingLevel.Trace);
 			else if (!Main.SettingsInstance.Trace) 
-				ComplexLogger.RemoveLevel<Main>(FlaggedLoggingLevel.Trace);
+				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Trace);
 
 			if (Main.SettingsInstance.Debug) 
-				ComplexLogger.AddLevel<Main>(FlaggedLoggingLevel.Debug);
+				Main.Logger.AddLevel(FlaggedLoggingLevel.Debug);
 			else if (!Main.SettingsInstance.Debug) 
-				ComplexLogger.RemoveLevel<Main>(FlaggedLoggingLevel.Debug);
+				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Debug);
 
 			if (Main.SettingsInstance.Information) 
-				ComplexLogger.AddLevel<Main>(FlaggedLoggingLevel.Information);
-			else if (!Main.SettingsInstance.Information) 
-				ComplexLogger.RemoveLevel<Main>(FlaggedLoggingLevel.Information);
+				Main.Logger.AddLevel(FlaggedLoggingLevel.Verbose);
+			else if (!Main.SettingsInstance.Information)
+                Main.Logger.RemoveLevel(FlaggedLoggingLevel.Verbose);
 
 			if (Main.SettingsInstance.Warning)
-				ComplexLogger.AddLevel<Main>(FlaggedLoggingLevel.Warning);
+				Main.Logger.AddLevel(FlaggedLoggingLevel.Warning);
 			else if (!Main.SettingsInstance.Warning)
-				ComplexLogger.RemoveLevel<Main>(FlaggedLoggingLevel.Warning);
+                Main.Logger.RemoveLevel(FlaggedLoggingLevel.Warning);
 
 			if (Main.SettingsInstance.Error) 
-				ComplexLogger.AddLevel<Main>(FlaggedLoggingLevel.Error);
+				Main.Logger.AddLevel(FlaggedLoggingLevel.Error);
 			else if (!Main.SettingsInstance.Error)
-				ComplexLogger.RemoveLevel<Main>(FlaggedLoggingLevel.Error);
+				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Error);
 
 			if (Main.SettingsInstance.Critical) 
-				ComplexLogger.AddLevel<Main>(FlaggedLoggingLevel.Critical);
+				Main.Logger.AddLevel(FlaggedLoggingLevel.Critical);
 			else if (!Main.SettingsInstance.Critical)
-				ComplexLogger.RemoveLevel<Main>(FlaggedLoggingLevel.Critical);
+				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Critical);
 
 			if (Main.SettingsInstance.BoostAurora && !GameManager.GetAuroraManager().IsAuroraBoostEnabled())
 			{

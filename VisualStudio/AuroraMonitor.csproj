@@ -18,12 +18,23 @@
 		<ReleaseFolderPath>P:\Modding\The Long Dark\MyMods\AuroraMonitor\Release</ReleaseFolderPath>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\auroramonitor_firstaidpanel" />
+	</ItemGroup>
+
 	<!-- List of used references -->
 	<ItemGroup>
 		<!-- This is the base reference. MUST EXIST -->
-		<PackageReference Include="STBlade.Modding.TLD.Il2CppAssemblies.Windows" Version="2.23.0" />
+		<PackageReference Include="STBlade.Modding.TLD.Il2CppAssemblies.Windows" Version="2.30.0" />
 		<!-- This is only if you use the ModSettings -->
 		<PackageReference Include="STBlade.Modding.TLD.ModSettings" Version="1.9.0" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Reference Include="ComplexLogger">
+			<HintPath>..\..\..\Libraries\ComplexLogger.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
 	</ItemGroup>
 
 	<!-- Most commonly used using's. Add to this so you dont need to define them in the cs files -->

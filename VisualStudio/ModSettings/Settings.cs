@@ -1,20 +1,40 @@
-using AuroraMonitor.Utilities.Logger;
 
 namespace AuroraMonitor.ModSettings
 {
 	internal class Settings : JsonModSettings
 	{
-		#region Settings
+		#region Basic
 		[Section("Basic")]
 
 		[Name("Enable")]
 		[Description("This allows you to entirely disable the mod")]
 		public bool EnableMod = true;
 
+		[Name("Can sleep during Aurora")]
+		public bool AllowSleepDuringAurora = true;
+
+		[Name("Units to use")]
+		[Description("Change this to change the displayed units")]
+		[Choice(["KM/H", "M/S", "MP/H"])]
+		public UnitUse UnitUse = UnitUse.Metric;
+
 		[Name("Boost Aurora")]
 		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
 		public bool BoostAurora = false;
 
+		[Name("Aurora Audio")]
+		[Description("Turn this off if you dont want the Aurora audio. You can also use this to fix the broken audio by toggling it")]
+		public bool PlayAuroraAudio = true;
+
+		[Name("Light Flickering")]
+		[Description("Disable this if you dont want lights to flicker (BETA)")]
+		public bool AuroraLightsFlicker = true;
+
+		[Name("Unlock Radio Usability")]
+		[Description("This will allow you to use the radio at any time, providing you repaired the relevent tower")]
+		public bool UnlockRadio = false;
+		#endregion
+		#region Aurora Probability
 		[Section( "Aurora Probability" )]
 
 		[Name( "Aurora Early Chance" )]
@@ -26,63 +46,12 @@ namespace AuroraMonitor.ModSettings
 		[Description( "Change this to change how likely an Aurora will happen" )]
 		[Slider( 0, 100 )]
 		public int AuroraChanceLate = 10;
-
-		[Section( "Notifications" )]
-
-		[Name("Units to use")]
-		[Description("Change this to change the displayed units")]
-		[Choice(new string[] { "KM/H", "M/S", "MP/H" })]
-		public UnitUse UnitsToUse = UnitUse.Metric;
-
-		[Name( "Weather Stage Time" )]
-		[Description( "Displays when a new weather stage is chosen" )]
-		[Slider( 0f, 60f, 61 )]
-		public float WeatherNotificationsTime = 15f;
-
-		[Name("Delay Time")]
-		[Description("When enabled, this will delay the notification. It is in seconds")]
-		[Slider(2f, 60f, 61)]
-		public float WeatherNotificationsDelay = 2f;
-
-		[Name( "Display Inside" )]
-		[Description( "Show the message while indoors" )]
-		public bool WeatherNotificationsIndoors = false;
-
-		[Name( "Show On Scene Change" )]
-		[Description( "Show the message whenever you change scenes" )]
-		public bool WeatherNotificationsSceneChange = false;
-
-		[Name("Toxic Fog icon")]
-		[Description("Three different icons for Toxic Fog (UNSUPPORTED)")]
-		[Choice(new string[] { "Level 1", "Level 2", "Level 3" })]
-		public ToxicFogImages fogImages = ToxicFogImages.l1;
-
-		[Section("Forced Aurora")]
-
-		[Name("Force Aurora")]
-		[Description("Will force an Aurora at the next oppertunity")]
-		public bool forceNextAurora         = false;
-
-		[Name("Force Early")]
-		[Description("This will force the Aurora to appear right when night starts")]
-		public bool forceEarly              = false;
-
-		[Name("Force Late")]
-		[Description("This will force the Aurora to appear later at night")]
-		public bool forceLate               = false;
-
-		[Name("Duration Override")]
-		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
-		public bool forceDuration           = false;
-
-		[Name("Duration Overide Time")]
-		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
-		public float forceDurationTime      = 0f;
-
+		#endregion
+		#region RGBa Colour Chooser
 		[Section("RGBa Colour Chooser")]
 
 		[Name("Colour Presets")]
-		[Description("Default = Vanilla, Cinematic = Colourful, Custom = your choice")]
+		[Description("Default = Vanilla, Cinematic = VERY Bright & Colourful, Custom = your choice")]
 		public AuroraColourSettings AuroraColour = AuroraColourSettings.Default;
 
 		[Name("Red")]
@@ -96,63 +65,88 @@ namespace AuroraMonitor.ModSettings
 		[Name("Blue")]
 		[Slider(0.01f, 1f)]
 		public float AuroraColour_B         = 0.35f;
+		#endregion
+		#region Weather Display
+		[Section("Weather Display")]
 
-		[Section("First Aid Screen")]
-
-		[Name("Enabled")]
-		public bool FirstAidScreen_Enabled = true;
-
-		[Name("Font Size")]
-		public int FirstAidScreen_FontSize = 16;
-
-		[Name("Units to use")]
-		[Description("Change this to change the displayed units")]
-		[Choice(new string[] { "KM/H", "M/S", "MP/H" })]
-		public UnitUse FirstAidScreen_UnitsToUse = UnitUse.Metric;
-
-		[Section("Forcast")]
+		[Name("Enable")]
+		public bool WeatherDisplayEnable = true;
 
 		[Name("Temperature Units")]
 		[Description("Which unit type to use. Celsius, Kelvin or Fahrenheit")]
 		public TemperatureUnits TemperatureUnits = TemperatureUnits.Celsius;
 
-		[Section("Logging Levels")]
+		//[Name("Font Size")]
+		//public int FontSize = 16;
+		#endregion
+		#region Notifications
+		//[Section("Notifications")]
 
-		[Name("Trace")]
-		public bool Trace			= false;
+		//[Name("Units to use")]
+		//[Description("Change this to change the displayed units")]
+		//[Choice(["KM/H", "M/S", "MP/H"])]
+		//public UnitUse UnitsToUse = UnitUse.Metric;
 
-		[Name("Debug")]
-		public bool Debug			= false;
+		//[Name("Weather Stage Time")]
+		//[Description("Displays when a new weather stage is chosen")]
+		//[Slider(0f, 60f, 61)]
+		//public float WeatherNotificationsTime = 15f;
 
-		[Name("Verbose")]
-		public bool Information		= false;
+		//[Name("Delay Time")]
+		//[Description("When enabled, this will delay the notification. It is in seconds")]
+		//[Slider(2f, 60f, 61)]
+		//public float WeatherNotificationsDelay = 2f;
 
-		[Name("Warning")]
-		public bool Warning			= true;
+		//[Name("Display Inside")]
+		//[Description("Show the message while indoors")]
+		//public bool WeatherNotificationsIndoors = false;
 
-		[Name("Error")]
-		public bool Error			= true;
+		//[Name("Show On Scene Change")]
+		//[Description("Show the message whenever you change scenes")]
+		//public bool WeatherNotificationsSceneChange = false;
 
-		[Name("Critical")]
-		public bool Critical		= true;
+		//[Name("Toxic Fog icon")]
+		//[Description("Three different icons for Toxic Fog (UNSUPPORTED)")]
+		//[Choice(["Level 1", "Level 2", "Level 3"])]
+		//public ToxicFogImages fogImages = ToxicFogImages.l1;
+		#endregion
+		#region Forced Aurora
+		[Section("Forced Aurora")]
+
+		[Name("Force Aurora")]
+		[Description("Will force an Aurora at the next oppertunity")]
+		public bool forceNextAurora = false;
+
+		[Name("Force Early")]
+		[Description("This will force the Aurora to appear right when night starts")]
+		public bool forceEarly = false;
+
+		[Name("Force Late")]
+		[Description("This will force the Aurora to appear later at night")]
+		public bool forceLate = false;
+
+		[Name("Duration Override")]
+		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
+		public bool forceDuration = false;
+
+		[Name("Duration Overide Time")]
+		[Description("WARNING: This is an unknown setting that does unknown things. Only enable it if you don't mind unpredictable things to happen")]
+		public float forceDurationTime = 0f;
 		#endregion
 
 		protected override void OnChange(FieldInfo field, object? oldValue, object? newValue)
 		{
-			if (field.Name == nameof(forceNextAurora))
+			if (field.Name == nameof(Main.SettingsInstance.PlayAuroraAudio))
 			{
-				RefreshFields();
+				if (Main.SettingsInstance.PlayAuroraAudio)
+				{
+					GameManager.GetAuroraManager().UpdateAuroraAudio();
+				}
+				else
+				{
+					GameManager.GetAuroraManager().AuroraAudioStop();
+				}
 			}
-			if (field.Name == nameof(AuroraColour))
-			{
-				RefreshFields();
-			}
-
-			//UIUtilities.UpdateLabelFontSize(UIUtilities.WeatherMonitorWindSpeedUnit, Main.SettingsInstance.FirstAidScreen_FontSize);
-			//UIUtilities.UpdateLabelFontSize(UIUtilities.WeatherMonitorWindSpeed, Main.SettingsInstance.FirstAidScreen_FontSize);
-			//UIUtilities.UpdateLabelFontSize(UIUtilities.WeatherMonitorWeather, Main.SettingsInstance.FirstAidScreen_FontSize);
-
-			base.OnChange(field, oldValue, newValue);
 		}
 
 		protected override void OnConfirm()
@@ -161,53 +155,9 @@ namespace AuroraMonitor.ModSettings
 			base.OnConfirm();
 		}
 
-		private void RefreshFields()
-		{
-			// Section:Forced Aurora
-			SetFieldVisible(nameof(forceEarly),                 Main.SettingsInstance.forceNextAurora);
-			SetFieldVisible(nameof(forceLate),                  Main.SettingsInstance.forceNextAurora);
-			SetFieldVisible(nameof(forceDuration),              Main.SettingsInstance.forceNextAurora);
-			SetFieldVisible(nameof(forceDurationTime),          Main.SettingsInstance.forceNextAurora);
-
-			// Section: RGBa Colour Selector
-			SetFieldVisible(nameof(AuroraColour_R),             Main.SettingsInstance.AuroraColour == AuroraColourSettings.Custom);
-			SetFieldVisible(nameof(AuroraColour_G),             Main.SettingsInstance.AuroraColour == AuroraColourSettings.Custom);
-			SetFieldVisible(nameof(AuroraColour_B),             Main.SettingsInstance.AuroraColour == AuroraColourSettings.Custom);
-		}
-
 #pragma warning disable CA1822 // Mark members as static
 		public void OnLoadConfirm()
 		{
-			if (Main.SettingsInstance.Trace) 
-				Main.Logger.AddLevel(FlaggedLoggingLevel.Trace);
-			else if (!Main.SettingsInstance.Trace) 
-				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Trace);
-
-			if (Main.SettingsInstance.Debug) 
-				Main.Logger.AddLevel(FlaggedLoggingLevel.Debug);
-			else if (!Main.SettingsInstance.Debug) 
-				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Debug);
-
-			if (Main.SettingsInstance.Information) 
-				Main.Logger.AddLevel(FlaggedLoggingLevel.Verbose);
-			else if (!Main.SettingsInstance.Information)
-                Main.Logger.RemoveLevel(FlaggedLoggingLevel.Verbose);
-
-			if (Main.SettingsInstance.Warning)
-				Main.Logger.AddLevel(FlaggedLoggingLevel.Warning);
-			else if (!Main.SettingsInstance.Warning)
-                Main.Logger.RemoveLevel(FlaggedLoggingLevel.Warning);
-
-			if (Main.SettingsInstance.Error) 
-				Main.Logger.AddLevel(FlaggedLoggingLevel.Error);
-			else if (!Main.SettingsInstance.Error)
-				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Error);
-
-			if (Main.SettingsInstance.Critical) 
-				Main.Logger.AddLevel(FlaggedLoggingLevel.Critical);
-			else if (!Main.SettingsInstance.Critical)
-				Main.Logger.RemoveLevel(FlaggedLoggingLevel.Critical);
-
 			if (Main.SettingsInstance.BoostAurora && !GameManager.GetAuroraManager().IsAuroraBoostEnabled())
 			{
 				GameManager.GetAuroraManager().BoostAurora(true);
@@ -227,13 +177,10 @@ namespace AuroraMonitor.ModSettings
 			}
 		}
 #pragma warning restore CA1822 // Mark members as static
-
-
 		// This is used to load the settings
 		internal static void OnLoad()
 		{
 			Main.SettingsInstance.AddToModSettings(BuildInfo.GUIName);
-			Main.SettingsInstance.RefreshFields();
 			Main.SettingsInstance.RefreshGUI();
 		}
 	}

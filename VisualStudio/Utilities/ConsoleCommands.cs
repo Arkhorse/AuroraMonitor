@@ -1,6 +1,4 @@
-﻿using AuroraMonitor.Utilities.Logger;
-
-namespace AuroraMonitor
+﻿namespace AuroraMonitor
 {
 	internal class ConsoleCommands
 	{
@@ -44,68 +42,71 @@ namespace AuroraMonitor
 			float hoursSinceLastChange              = secondsSinceLastChange / 1440;
 			float minutesSinceLastChange            = secondsSinceLastChange / 60;
 
-			Main.Logger.WriteSeperator();
+            Main.Logger.Log( "Time Information", FlaggedLoggingLevel.None, LoggingSubType.IntraSeparator);
 
-            Main.Logger.WriteIntraSeparator( "Time Information" );
+			Main.Logger.Log($"Current Day:                       {uniStorm.GetDayNumber()}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"Time of day:                      {time.GetHour()}h:{time.GetMinutes()}m", FlaggedLoggingLevel.None);
 
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Current Day:                       {uniStorm.GetDayNumber()}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Time of day:                      {time.GetHour()}h:{time.GetMinutes()}m" );
+            Main.Logger.Log("Weather Information", FlaggedLoggingLevel.None, LoggingSubType.IntraSeparator);
 
-            Main.Logger.WriteIntraSeparator("Weather Information");
-
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Previous Weather:                  {Main.MonitorData!.Prev}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"UniStorm Previous Weather:         {uniStorm.m_PreviousWeatherStage}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Current Weather:                   {uniStorm.GetWeatherStage()}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"GetCurrentWeatherLoc:              {WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm())}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"\tResult:                          {Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()))}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"GetCurrentWeatherIcon:             {WeatherUtilities.GetCurrentWeatherIcon(GameManager.GetUniStorm())}");
+			Main.Logger.Log($"Previous Weather:                  {Main.MonitorData!.Prev}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"UniStorm Previous Weather:         {uniStorm.m_PreviousWeatherStage}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"Current Weather:                   {uniStorm.GetWeatherStage()}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"GetCurrentWeatherLoc:              {WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm())}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"\tResult:                          {Localization.Get(WeatherUtilities.GetCurrentWeatherLoc(GameManager.GetUniStorm()))}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"GetCurrentWeatherIcon:             {WeatherUtilities.GetCurrentWeatherIcon(GameManager.GetUniStorm())}", FlaggedLoggingLevel.None);
 
             //PrintSavedWeatherData();
 
-            Main.Logger.WriteIntraSeparator("Wind Information");
+            Main.Logger.Log("Wind Information", FlaggedLoggingLevel.None, LoggingSubType.IntraSeparator);
 
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind Speed:                        {wind.GetSpeedMPH()}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind angle:                        {wind.GetWindAngleRelativeToPlayer()}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind Direction:                    {WeatherUtilities.GetWindDirection()}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Wind Mult:                         {GameManager.GetPlayerMovementComponent().GetWindMovementMultiplier()}");
+			Main.Logger.Log($"Wind Speed:                        {wind.GetSpeedMPH()}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"Wind angle:                        {wind.GetWindAngleRelativeToPlayer()}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"Wind Direction:                    {WeatherUtilities.GetWindDirection()}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"Wind Mult:                         {GameManager.GetPlayerMovementComponent().GetWindMovementMultiplier()}", FlaggedLoggingLevel.None);
 
-            Main.Logger.WriteIntraSeparator("Aurora Information");
+            Main.Logger.Log("Aurora Information", FlaggedLoggingLevel.None, LoggingSubType.IntraSeparator);
 
 
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Time since last Aurora:            {(int)daysSincLastChange}:{(int)hoursSinceLastChange}:{(int)minutesSinceLastChange}:{secondsSinceLastChange}" );
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Aurora Early Chance:               {GameManager.GetWeatherComponent().m_AuroraEarlyWindowProbability}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"Aurora Late Chance:                {GameManager.GetWeatherComponent().m_AuroraLateWindowProbability}");
+			Main.Logger.Log($"Time since last Aurora:            {(int)daysSincLastChange}:{(int)hoursSinceLastChange}:{(int)minutesSinceLastChange}:{secondsSinceLastChange}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"Aurora Early Chance:               {GameManager.GetWeatherComponent().m_AuroraEarlyWindowProbability}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"Aurora Late Chance:                {GameManager.GetWeatherComponent().m_AuroraLateWindowProbability}", FlaggedLoggingLevel.None);
 
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"cinematicColours:                  {cinematicColours}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"numFramesNotActive:                {numFramesNotActive}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"forcedAuroraNext:                  {forcedAuroraNext}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"numAuroraSave:                     {numAuroraSave}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"started:                           {started}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"fullystarted:                      {fullystarted}");
-			Main.Logger.Log(FlaggedLoggingLevel.None, $"boosted:                           {boosted}");
+			Main.Logger.Log($"cinematicColours:                  {cinematicColours}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"numFramesNotActive:                {numFramesNotActive}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"forcedAuroraNext:                  {forcedAuroraNext}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"numAuroraSave:                     {numAuroraSave}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"started:                           {started}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"fullystarted:                      {fullystarted}", FlaggedLoggingLevel.None);
+			Main.Logger.Log($"boosted:                           {boosted}", FlaggedLoggingLevel.None);
 			AuroraUtilities.FetchAuroraColour();
 
-            Main.Logger.WriteIntraSeparator("Extra Debug Data");
+            Main.Logger.Log("Extra Debug Data", FlaggedLoggingLevel.None, LoggingSubType.IntraSeparator);
 
 			if (Main.Config != null)
 			{
-                Main.Logger.Log(FlaggedLoggingLevel.None, $"BaseLoaded:                        {Main.Config.BaseLoaded}");
-                Main.Logger.Log(FlaggedLoggingLevel.None, $"SandboxLoaded:                     {Main.Config.SandboxLoaded}");
-                Main.Logger.Log(FlaggedLoggingLevel.None, $"DLC01Loaded:                       {Main.Config.DLC01Loaded}");
-                Main.Logger.Log(FlaggedLoggingLevel.None, $"Current Scene:                     {GameManager.m_ActiveScene}");
-                Main.Logger.Log(FlaggedLoggingLevel.None, $"BaseSceneName:                     {Main.Config.BaseSceneName}");
-                Main.Logger.Log(FlaggedLoggingLevel.None, $"SandboxSceneName:                  {Main.Config.SandboxSceneName}");
-                Main.Logger.Log(FlaggedLoggingLevel.None, $"DLC01SceneName:                    {Main.Config.DLC01SceneName}");
+                Main.Logger.Log($"BaseLoaded:                        {Main.Config.BaseLoaded}", FlaggedLoggingLevel.None);
+                Main.Logger.Log($"SandboxLoaded:                     {Main.Config.SandboxLoaded}", FlaggedLoggingLevel.None);
+                Main.Logger.Log($"DLC01Loaded:                       {Main.Config.DLC01Loaded}", FlaggedLoggingLevel.None);
+                Main.Logger.Log($"Current Scene:                     {GameManager.m_ActiveScene}", FlaggedLoggingLevel.None);
+                Main.Logger.Log($"BaseSceneName:                     {Main.Config.BaseSceneName}", FlaggedLoggingLevel.None);
+                Main.Logger.Log($"SandboxSceneName:                  {Main.Config.SandboxSceneName}", FlaggedLoggingLevel.None);
+                Main.Logger.Log($"DLC01SceneName:                    {Main.Config.DLC01SceneName}", FlaggedLoggingLevel.None);
             }
 
-            Main.Logger.WriteSeperator();
+            Main.Logger.Log(FlaggedLoggingLevel.None, LoggingSubType.Separator);
 
             //Main.Logger.Log(FlaggedLoggingLevel.None, $"");
         }
 
-        public static void ForceDisplay()
+  //      public static void ForceDisplay()
+		//{
+		//	WeatherNotifications.MaybeDisplayWeatherNotification();
+		//}
+
+		public static void FixAuroraSound()
 		{
-			WeatherNotifications.MaybeDisplayWeatherNotification();
+			GameManager.GetAuroraManager().UpdateAuroraAudio();
 		}
 
 		/// <summary>
@@ -113,10 +114,11 @@ namespace AuroraMonitor
 		/// </summary>
 		internal static void RegisterCommands()
 		{
+			uConsole.RegisterCommand("FixAuroraSound", new Action(FixAuroraSound));
 			uConsole.RegisterCommand("get_aurora_color", new Action( AuroraUtilities.FetchAuroraColour));
 			uConsole.RegisterCommand("get_aurora_time", new Action( AuroraUtilities.FetchAuroraTime));
 			uConsole.RegisterCommand("AuroraMonitorDebug", new Action(PrintDebugInfo));
-			uConsole.RegisterCommand("ForceDisplay", new Action(ForceDisplay));
+			//uConsole.RegisterCommand("ForceDisplay", new Action(ForceDisplay));
 		}
 
 		/// <summary>
@@ -124,10 +126,11 @@ namespace AuroraMonitor
 		/// </summary>
 		internal static void UnRegisterCommands()
 		{
+			uConsole.UnRegisterCommand("FixAuroraSound");
 			uConsole.UnRegisterCommand("get_aurora_color");
 			uConsole.UnRegisterCommand("get_aurora_time");
 			uConsole.UnRegisterCommand("AuroraMonitorDebug");
-            uConsole.UnRegisterCommand("ForceDisplay");
+            //uConsole.UnRegisterCommand("ForceDisplay");
         }
 	}
 }

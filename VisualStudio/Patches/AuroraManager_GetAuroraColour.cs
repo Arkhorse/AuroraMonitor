@@ -1,6 +1,4 @@
-﻿using AuroraMonitor.Utilities.Logger;
-
-namespace AuroraMonitor.Patches
+﻿namespace AuroraMonitor.Patches
 {
     [HarmonyPatch(typeof(AuroraManager), nameof(AuroraManager.GetAuroraColour))]
     internal class AuroraManager_GetAuroraColour
@@ -24,7 +22,7 @@ namespace AuroraMonitor.Patches
 
                 __result = white;
 
-                Main.Logger.Log(FlaggedLoggingLevel.Debug, $"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}");
+                Main.Logger.Log($"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
                 return;
             }
 
@@ -32,7 +30,7 @@ namespace AuroraMonitor.Patches
             {
                 __result = new Color(0.392156869f, 0.5882353f, 0.980392158f, 1f);
 
-                Main.Logger.Log(FlaggedLoggingLevel.Debug, $"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}");
+                Main.Logger.Log($"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
                 return;
             }
 
@@ -43,7 +41,7 @@ namespace AuroraMonitor.Patches
 
             __result = white;
 
-            Main.Logger.Log(FlaggedLoggingLevel.Debug, $"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}");
+            Main.Logger.Log($"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
             return;
         }
     }
@@ -65,7 +63,7 @@ namespace AuroraMonitor.Patches
             {
                 GameManager.GetAuroraManager().SetCinematicColours( true );
 
-                Main.Logger.Log(FlaggedLoggingLevel.Debug, $"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {__result}");
+                Main.Logger.Log($"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
                 return;
             }
             else if (Main.SettingsInstance.AuroraColour == AuroraColourSettings.Custom)
@@ -79,7 +77,7 @@ namespace AuroraMonitor.Patches
 
                 __result = White;
 
-                Main.Logger.Log(FlaggedLoggingLevel.Debug, $"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {__result}");
+                Main.Logger.Log($"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
                 return;
             }
             else
@@ -90,7 +88,7 @@ namespace AuroraMonitor.Patches
 
                 __result = auroraColour;
 
-                Main.Logger.Log(FlaggedLoggingLevel.Debug, $"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {auroraColour}");
+                Main.Logger.Log($"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {auroraColour}", ComplexLogger.FlaggedLoggingLevel.Verbose);
             }
         }
     }

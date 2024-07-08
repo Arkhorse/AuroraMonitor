@@ -35,18 +35,6 @@
             return false;
         }
 
-        public static bool IsScenePlayable(string? sceneName = null)
-        {
-            sceneName ??= GameManager.m_ActiveScene;
-
-            if (IsSceneEmpty(sceneName) || IsSceneBoot(sceneName) || IsSceneMenu(sceneName))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         /// <summary>
         /// Used to check if the current scene is a base scene (Zone or Region)
         /// </summary>
@@ -111,21 +99,53 @@
             return true;
         }
 
-        public static bool IsValidSceneForWeather(string sceneName, bool IndoorOverride)
+        public static bool IsScenePlayable(string? sceneName = null)
         {
+            sceneName ??= GameManager.m_ActiveScene;
 
-            bool flag = ((IsSceneBase(sceneName)) && !(IsSceneAdditive(sceneName)));
-
-            if (flag && !GameManager.GetWeatherComponent().IsIndoorScene())
+            if (IsSceneEmpty(sceneName) || IsSceneBoot(sceneName) || IsSceneMenu(sceneName))
             {
-                return true;
+                return false;
             }
-            else if (GameManager.GetWeatherComponent().IsIndoorScene() && IndoorOverride)
+
+            return true;
+        }
+
+        public static bool IsSceneIndoorEnvironment(string? sceneName = null)
+        {
+            sceneName ??= GameManager.m_ActiveScene;
+
+            if (sceneName != null && !IsSceneEmpty(sceneName) && !IsSceneBoot(sceneName) && !IsSceneMenu(sceneName))
             {
-                return true;
+                if (GameManager.GetWeatherComponent().IsIndoorEnvironment())
+                {
+                    return true;
+                }
             }
 
             return false;
+        }
+
+        public static bool IsSceneIndoor(string? sceneName = null)
+        {
+            sceneName ??= GameManager.m_ActiveScene;
+
+            if (sceneName != null && !IsSceneEmpty(sceneName) && !IsSceneBoot(sceneName) && !IsSceneMenu(sceneName))
+            {
+                if (!IsSceneIndoorEnvironment(sceneName) && GameManager.GetWeatherComponent().IsIndoorScene()) return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsValidSceneForWeather(string sceneName, bool IndoorOverride)
+        {
+            bool one    = (IsSceneBase(sceneName));
+            bool two    = !(IsSceneAdditive(sceneName));
+            bool three  = GameManager.GetWeatherComponent().IsIndoorScene();
+            bool four   = three && IndoorOverride;
+
+            return one && two && (three || four);
         }
     }
 }

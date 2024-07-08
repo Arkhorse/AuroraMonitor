@@ -2,125 +2,177 @@ global using AuroraMonitor.Utilities.Aurora;
 global using AuroraMonitor.Data;
 global using AuroraMonitor.GUI;
 global using AuroraMonitor.GUI.Addons;
-global using AuroraMonitor.JSON;
+global using AuroraMonitor.Utilities.JSON;
 global using AuroraMonitor.Notifications;
 global using AuroraMonitor.Patches;
 global using AuroraMonitor.Utilities;
 global using AuroraMonitor.Utilities.Enums;
 global using AuroraMonitor.Utilities.Exceptions;
 global using MelonLoader.Utils;
+global using ComplexLogger;
 using AuroraMonitor.ModSettings;
-using AuroraMonitor.Utilities.Logger;
+using UnityEngine.UIElements;
 
 namespace AuroraMonitor
 {
-    internal class Main : MelonMod
-    {
-        public static string MonitorFolder { get; } = Path.Combine(MelonEnvironment.ModsDirectory, "Monitor");
-        public static string MonitorMainConfig { get; } = Path.Combine(MonitorFolder, "main.json");
-        public static string Panel_FirstAid_AddonsBundlePath { get; } = "AuroraMonitor.Resources.panel_firstaid_addons";
+	internal class Main : MelonMod
+	{
+		public static string MonitorFolder { get; } = Path.Combine(MelonEnvironment.ModsDirectory, "Monitor");
+		public static string MonitorMainConfig { get; } = Path.Combine(MonitorFolder, "main.json");
+		public static string MonitorConfig { get; } = Path.Combine(MonitorFolder, "config.json");
+		public static string Progressbar_AddonsBundlePath { get; } = "AuroraMonitor.Resources.progressbar";
 
-        public static int GridCellHeight { get; } = 33;
+		public static int GridCellHeight { get; } = 33;
 
-        #region Class Instances
-        public static MainConfig? Config { get; set; }
-        public static WeatherMonitorData? MonitorData { get; set; }
-        public static Settings SettingsInstance { get; set; } = new();
-        public static ComplexLogger Logger { get; } = new();
-        #endregion
+		#region Class Instances
+		public static MainConfig? Config { get; set; }
+		public static WeatherMonitorData? MonitorData { get; set; }
+		public static ModSettings.Settings SettingsInstance { get; set; } = new();
+		public static ComplexLogger<Main> Logger { get; } = new();
+		#endregion
 
-        public override void OnInitializeMelon()
-        {
-            Setup.Init();
+		#region CurrentWeatherDisplay
+		public static GameObject? CurrentWeather { get; set; }
+		
+		#endregion
+		#region Weather Icons
+		internal List<string> WeatherIconNames =
+		[
+			"DenseFog",
+			"LightSnow",
+			"HeavySnow",
+			"PartlyCloudy",
+			"PartlyCloudy_Night",
+			"Clear",
+			"Clear_Night",
+			"Cloudy",
+			"LightFog",
+			"Blizzard",
+			"ClearAurora",
+			"ToxicFog",
+			"ElectrostaticFog"
+		];
+		internal static List<TextureDefinition> WeatherIcons = [];
+		#endregion
 
-            Settings.OnLoad();
-            ConsoleCommands.RegisterCommands();
+		//public static List<WeatherAPI> RegisteredWeatherAPIs { get; } = new();
 
-            Logger.Log(FlaggedLoggingLevel.Verbose, $"Mod loaded with v{BuildInfo.Version}");
-        }
+		public override void OnInitializeMelon()
+		{
+			Setup.Init();
 
-        public static AssetBundle LoadAssetBundle(string name)
-        {
-            using (Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name))
-            using (MemoryStream? memory = new())
-            {
-                stream!.CopyTo(memory);
-                return AssetBundle.LoadFromMemory(memory.ToArray());
-            };
-        }
+			Settings.OnLoad();
+			ConsoleCommands.RegisterCommands();
 
-        // Using this actually works 100% of the time. OnSceneWasLoaded and OnSceneWasUnloaded is Additative scene loads ONLY
-        public override void OnSceneWasInitialized(int buildIndex, string sceneName)
-        {
-            base.OnSceneWasInitialized(buildIndex, sceneName);
+			WeatherIcons = new();
+			foreach (string file in WeatherIconNames)
+			{
+				Texture2D texture = ImageUtilities.GetPNG("Monitor//Textures", file);
+				if (texture != null)
+				{
+					texture.name = file;
+					var _ = new TextureDefinition() { Name = file, Texture = texture };
+					WeatherIcons.Add(_);
+				}
+			}
+		}
 
-            if (Config == null) return;
+		public static AssetBundle LoadAssetBundle(string name)
+		{
+			using (Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name))
+			{
+				MemoryStream? memory = new((int)stream.Length);
+				stream!.CopyTo(memory);
+				return AssetBundle.LoadFromMemory(memory.ToArray());
+			};
+		}
 
-            if (SceneUtilities.IsSceneEmpty(sceneName) || SceneUtilities.IsSceneBoot(sceneName)) return;
+		// Using this actually works 100% of the time. OnSceneWasLoaded and OnSceneWasUnloaded is Additative scene loads ONLY
+		public override void OnSceneWasInitialized(int buildIndex, string sceneName)
+		{
+			base.OnSceneWasInitialized(buildIndex, sceneName);
 
-            if (SceneUtilities.IsSceneMenu(sceneName))
-            {
-                SettingsInstance.OnLoadConfirm();
-                return;
-            }
+			if (Config == null) return;
 
-            if (SceneUtilities.IsSceneBase(sceneName) && !SceneUtilities.IsSceneAdditive(sceneName))
-            {
-                SettingsInstance.OnLoadConfirm();
-                Config.BaseLoaded = true;
-                Config.BaseSceneName = sceneName;
+			if (SceneUtilities.IsSceneEmpty(sceneName) || SceneUtilities.IsSceneBoot(sceneName)) return;
 
-                if (SettingsInstance.WeatherNotificationsSceneChange) WeatherNotifications.MaybeDisplayWeatherNotification();
-            }
-            else if (SceneUtilities.IsSceneSandbox(sceneName))
-            {
-                Config.SandboxLoaded = true;
-                Config.SandboxSceneName = sceneName;
-            }
-            else if (SceneUtilities.IsSceneDLC01(sceneName))
-            {
-                Config.DLC01Loaded = true;
-                Config.DLC01SceneName = sceneName;
-            }
-        }
+			if (SceneUtilities.IsSceneMenu(sceneName))
+			{
+				SettingsInstance.OnLoadConfirm();
+				return;
+			}
 
-        public override void OnLateUpdate()
-        {
-            base.OnLateUpdate();
-            try
-            {
-                if (!SceneUtilities.IsScenePlayable()) return;
-            }
-            catch { }
+			if (SceneUtilities.IsSceneBase(sceneName) && !SceneUtilities.IsSceneAdditive(sceneName))
+			{
+				SettingsInstance.OnLoadConfirm();
+				Config.BaseLoaded = true;
+				Config.BaseSceneName = sceneName;
 
-            try
-            {
-                if (!GameManager.GetUniStorm()) return;
-            }
-            catch { }
+				//if (RegisteredWeatherAPIs.Count == 0 && GameManager.GetWeatherTransitionComponent().m_UnmanagedWeatherStage == WeatherStage.Undefined)
+				//{
+				//	Logger.Log(FlaggedLoggingLevel.Warning, "Found no registered weather API users and the unmanaged weather state is set. Reverting to default weather");
 
-            try
-            {
-                WeatherNotifications.MaybeDisplayWeatherNotification();
-            }
-            catch { }
-        }
+				//	GameManager.GetWeatherTransitionComponent().ActivateDefaultWeatherSet();
+				//}
 
-        /// <summary>
-        /// Checks if the player is currently involved in anything that would make modded actions unwanted
-        /// </summary>
-        /// <param name="PlayerManagerComponent">The current instance of the PlayerManager component, use <see cref="GameManager.GetPlayerManagerComponent()"/></param>
-        /// <returns><c>true</c> if the player isnt dead, in a conversation, locked or in a cinematic</returns>
-        public static bool IsPlayerAvailable(PlayerManager PlayerManagerComponent)
-        {
-            if (PlayerManagerComponent == null) return false;
+				//if (SettingsInstance.WeatherNotificationsSceneChange) WeatherNotifications.MaybeDisplayWeatherNotification();
+			}
+			else if (SceneUtilities.IsSceneSandbox(sceneName))
+			{
+				Config.SandboxLoaded = true;
+				Config.SandboxSceneName = sceneName;
+			}
+			else if (SceneUtilities.IsSceneDLC01(sceneName))
+			{
+				Config.DLC01Loaded = true;
+				Config.DLC01SceneName = sceneName;
+			}
+		}
 
-            bool first      = PlayerManagerComponent.m_ControlMode == PlayerControlMode.Dead;
-            bool second     = PlayerManagerComponent.m_ControlMode == PlayerControlMode.InConversation;
-            bool third      = PlayerManagerComponent.m_ControlMode == PlayerControlMode.Locked;
-            bool fourth     = PlayerManagerComponent.m_ControlMode == PlayerControlMode.InFPCinematic;
+		public static void UpdateStages(WeatherStage current)
+		{
+			if (MonitorData == null) return;
 
-            return first && second && third && fourth;
-        }
-    }
+			MonitorData.Prev = current;
+		}
+
+		//public override void OnLateUpdate()
+		//{
+		//	base.OnLateUpdate();
+		//	try
+		//	{
+		//		if (!SceneUtilities.IsScenePlayable()) return;
+		//	}
+		//	catch { }
+
+		//	try
+		//	{
+		//		if (!GameManager.GetUniStorm()) return;
+		//	}
+		//	catch { }
+
+		//	try
+		//	{
+		//		WeatherNotifications.MaybeDisplayWeatherNotification();
+		//	}
+		//	catch { }
+		//}
+
+		/// <summary>
+		/// Checks if the player is currently involved in anything that would make modded actions unwanted
+		/// </summary>
+		/// <param name="PlayerManagerComponent">The current instance of the PlayerManager component, use <see cref="GameManager.GetPlayerManagerComponent()"/></param>
+		/// <returns><c>true</c> if the player isnt dead, in a conversation, locked or in a cinematic</returns>
+		public static bool IsPlayerAvailable(PlayerManager PlayerManagerComponent)
+		{
+			if (PlayerManagerComponent == null) return false;
+
+			bool first      = PlayerManagerComponent.m_ControlMode == PlayerControlMode.Dead;
+			bool second     = PlayerManagerComponent.m_ControlMode == PlayerControlMode.InConversation;
+			bool third      = PlayerManagerComponent.m_ControlMode == PlayerControlMode.Locked;
+			bool fourth     = PlayerManagerComponent.m_ControlMode == PlayerControlMode.InFPCinematic;
+
+			return first && second && third && fourth;
+		}
+	}
 }

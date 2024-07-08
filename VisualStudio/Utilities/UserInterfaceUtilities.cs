@@ -53,17 +53,20 @@ namespace AuroraMonitor.Utilities
 
         public static void SetupUISprite(UISprite sprite, string spriteName)
         {
-            UIAtlas baseAtlas           = InterfaceManager.GetPanel<Panel_HUD>().m_AltFireGamepadButtonSprite.atlas;
+            UIAtlas baseAtlas           = InterfaceManager.GetInstance().m_ScalableAtlases[0];
             UISpriteData spriteData     = baseAtlas.GetSprite(spriteName);
 
             sprite.atlas                = baseAtlas;
             sprite.spriteName           = spriteName;
             sprite.mSprite              = spriteData;
             sprite.mSpriteSet           = true;
-            //sprite.alpha                = 1f;
-            //sprite.color                = Color.white;
-            //sprite.MakePixelPerfect();
-            //sprite.enabled              = true;
+			//sprite.depth				= 30;
+			//sprite.alpha                = 1f;
+			//sprite.color                = Color.white;
+			//sprite.MakePixelPerfect();
+			//sprite.enabled              = true;
+
+			//sprite.MakePixelPerfect();
         }
     }
 }

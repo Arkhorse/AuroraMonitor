@@ -1,7 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using AuroraMonitor.Utilities.Exceptions;
-
 namespace AuroraMonitor.Data
 {
 	public class WeatherMonitorData

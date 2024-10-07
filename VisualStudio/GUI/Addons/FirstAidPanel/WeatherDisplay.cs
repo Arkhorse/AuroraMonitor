@@ -6,6 +6,7 @@ using Il2CppTMPro;
 using UnityEngine.UI;
 using AuroraMonitor.ModSettings;
 using Il2Cpp;
+using Harmony;
 
 namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 {
@@ -82,6 +83,7 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 			{
 				Main.Logger.Log("AuroraMonitor_FirstAidPanel is null", FlaggedLoggingLevel.Critical);
 			}
+			WeatherDataTracker();
 		}
 
 		public void Update()
@@ -98,6 +100,11 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 			WeatherGroupController(true);
 			WindGroupController(!GameManager.GetWeatherComponent().IsIndoorEnvironment() && !GameManager.GetWeatherComponent().IsIndoorScene());
 			WeatherIconController();
+		}
+		public void OnDestroy()
+		{
+			WeatherSetData.OnWeatherStageChanged -= SetWeatherStageAction;
+			SetWeatherStageAction -= OnWeatherChange;
 		}
 
 		#region Group Controllers
@@ -244,6 +251,30 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 		public int GetNormalizedSpeed(float input)
 		{
 			return (int)Mathf.Ceil(GetCurrentUnits(input));
+		}
+
+		public static Action<WeatherSetStage> SetWeatherStageAction;
+		public static void WeatherDataTracker()
+		{
+			WeatherSetData.OnWeatherStageChanged += SetWeatherStageAction;
+			SetWeatherStageAction += OnWeatherChange;
+		}
+		public static void OnWeatherChange(WeatherSetStage weatherSetStage)
+		{
+			if (Main.WeatherDataTracking == null) return;
+			WeatherDataTrackingIndex index = new()
+			{
+				m_WeatherType = weatherSetStage.m_WeatherType,
+				m_DurationMinMax = weatherSetStage.m_DurationMinMax,
+				m_TransitionTimeMinMax = weatherSetStage.m_TransitionTimeMinMax,
+				m_CurrentDuration = weatherSetStage.m_CurrentDuration,
+				m_CurrentTransitionTime = weatherSetStage.m_CurrentTransitionTime,
+				m_ElapsedTime = weatherSetStage.m_ElapsedTime,
+				Temperature = GameManager.GetWeatherComponent().GetBaseTemperature()
+			};
+
+			Main.WeatherDataTracking.Weather.Add(GameManager.GetTimeOfDayComponent().GetDayNumber().ToString(), index);
+			JsonFile.Save<WeatherDataTracking>(Path.Combine(Main.MonitorFolder, "WeatherDataTracking.json"), Main.WeatherDataTracking);
 		}
 	}
 }

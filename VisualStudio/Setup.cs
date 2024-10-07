@@ -25,6 +25,7 @@
 			Main.Config ??= new();
 			Main.SettingsInstance ??= new();
 			Main.MonitorData ??= new();
+			Main.WeatherDataTracking ??= new();
 
 			return true;
 		}

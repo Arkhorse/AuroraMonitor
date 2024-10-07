@@ -25,6 +25,7 @@ namespace AuroraMonitor
 		public static int GridCellHeight { get; } = 33;
 
 		#region Class Instances
+		public static WeatherDataTracking? WeatherDataTracking { get; set; }
 		public static MainConfig? Config { get; set; }
 		public static WeatherMonitorData? MonitorData { get; set; }
 		public static ModSettings.Settings SettingsInstance { get; set; } = new();
@@ -61,13 +62,13 @@ namespace AuroraMonitor
 		{
 			Setup.Init();
 
-			Settings.OnLoad();
+			ModSettings.Settings.OnLoad();
 			ConsoleCommands.RegisterCommands();
 
 			WeatherIcons = new();
 			foreach (string file in WeatherIconNames)
 			{
-				Texture2D texture = ImageUtilities.GetPNG("Monitor//Textures", file);
+				Texture2D? texture = ImageUtilities.GetPNG("Monitor//Textures", file);
 				if (texture != null)
 				{
 					texture.name = file;

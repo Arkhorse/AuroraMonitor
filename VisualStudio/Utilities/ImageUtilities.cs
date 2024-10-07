@@ -108,5 +108,15 @@ namespace AuroraMonitor.Utilities
 
 			return obj;
 		}
+		/// <summary>
+		/// Checks if the object is null or not
+		/// </summary>
+		/// <param name="object"></param>
+		/// <returns><see langword="true"/> if the object is null, <see langword="false"/> if not</returns>
+		/// <remarks>Usage: <code>object.IsObjectNull();</code></remarks>
+		public static object IsObjectNull(this object @object)
+		{
+			return @object is null;
+		}
 	}
 }

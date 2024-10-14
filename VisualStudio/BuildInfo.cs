@@ -13,6 +13,8 @@
         public const string GUIName                         = "Aurora Monitor";
         /// <summary>The minimum Melon Loader version that your mod requires</summary>
         public const string MelonLoaderVersion              = "0.6.1";
+		/// <summary>OPTIONAL: Used to define things like build candidits.</summary>
+		public const string RevisionString					= "1.3.0 RC2";
         #endregion
 
         #region Optional

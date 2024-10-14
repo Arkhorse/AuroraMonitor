@@ -1,35 +1,37 @@
-﻿using AuroraMonitor.Utilities.Enums;
-
-namespace AuroraMonitor
+﻿namespace AuroraMonitor.Patches
 {
     [HarmonyPatch(typeof(AuroraManager), nameof(AuroraManager.GetAuroraColour))]
     internal class AuroraManager_GetAuroraColour
     {
         private static bool Prefix()
         {
-            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return true; // mod not usable in challenges
             return false;
         }
 
         private static void Postfix(ref Color __result)
         {
-            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return; // mod not usable in challenges
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
             Color white = Color.white;
 
-            if (Settings.Instance.AuroraColour == AuroraColourSettings.Custom)
+            if (Main.SettingsInstance.AuroraColour == AuroraColourSettings.Custom)
             {
-                white.r = Settings.Instance.AuroraColour_R;
-                white.g = Settings.Instance.AuroraColour_G;
-                white.b = Settings.Instance.AuroraColour_B;
+                white.r = Main.SettingsInstance.AuroraColour_R;
+                white.g = Main.SettingsInstance.AuroraColour_G;
+                white.b = Main.SettingsInstance.AuroraColour_B;
                 white.a = Mathf.Pow(normalizedAlpha, 2);
 
                 __result = white;
+
+                Main.Logger.Log($"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
+                return;
             }
 
-            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Settings.Instance.AuroraColour == AuroraColourSettings.Default) || Settings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
+            if ( (GameManager.GetAuroraManager().m_UseCinematicColours && Main.SettingsInstance.AuroraColour == AuroraColourSettings.Default) || Main.SettingsInstance.AuroraColour == AuroraColourSettings.Cinematic)
             {
                 __result = new Color(0.392156869f, 0.5882353f, 0.980392158f, 1f);
+
+                Main.Logger.Log($"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
+                return;
             }
 
             white.r = Mathf.Lerp(GameManager.GetAuroraManager().m_RedTint.GetMin(),         GameManager.GetAuroraManager().m_RedTint.GetMax(),          Mathf.Sin(GameManager.GetAuroraManager().m_ColorTimers.x));
@@ -38,6 +40,9 @@ namespace AuroraMonitor
             white.a = Mathf.Lerp(GameManager.GetAuroraManager().m_AlphaControl.GetMin(),    GameManager.GetAuroraManager().m_AlphaControl.GetMax(),     Mathf.Sin(GameManager.GetAuroraManager().m_ColorTimers.w) ) * Mathf.Pow(normalizedAlpha, 2);
 
             __result = white;
+
+            Main.Logger.Log($"Aurora Color retrieved from AuroraManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
+            return;
         }
     }
 
@@ -47,7 +52,6 @@ namespace AuroraMonitor
     {
         private static bool Prefix()
         {
-            if (GameManager.GetExperienceModeManagerComponent().IsChallengeActive()) return true; // mod not usable in challenges
             return false;
         }
         private static void Postfix(InteriorLightingManager __instance, ref Color __result)
@@ -55,21 +59,25 @@ namespace AuroraMonitor
             Color auroraColour = GameManager.GetAuroraManager().GetAuroraColour();
             float normalizedAlpha = GameManager.GetAuroraManager().GetNormalizedAlpha();
 
-            if (Settings.Instance.AuroraColour == AuroraColourSettings.Cinematic)
+            if (Main.SettingsInstance.AuroraColour == AuroraColourSettings.Cinematic)
             {
                 GameManager.GetAuroraManager().SetCinematicColours( true );
+
+                Main.Logger.Log($"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
                 return;
             }
-            else if (Settings.Instance.AuroraColour == AuroraColourSettings.Custom)
+            else if (Main.SettingsInstance.AuroraColour == AuroraColourSettings.Custom)
             {
                 Color White = Color.white;
 
-                White.r = Settings.Instance.AuroraColour_R;
-                White.g = Settings.Instance.AuroraColour_G;
-                White.b = Settings.Instance.AuroraColour_B;
+                White.r = Main.SettingsInstance.AuroraColour_R;
+                White.g = Main.SettingsInstance.AuroraColour_G;
+                White.b = Main.SettingsInstance.AuroraColour_B;
                 White.a = Mathf.Pow(normalizedAlpha, 2);
 
                 __result = White;
+
+                Main.Logger.Log($"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {__result}", ComplexLogger.FlaggedLoggingLevel.Verbose);
                 return;
             }
             else
@@ -77,6 +85,10 @@ namespace AuroraMonitor
                 auroraColour.r *= __instance.m_AuroraRed;
                 auroraColour.g *= __instance.m_AuroraGreen;
                 auroraColour.b *= __instance.m_AuroraBlue;
+
+                __result = auroraColour;
+
+                Main.Logger.Log($"Aurora Color retrieved from InteriorLightingManager.GetAuroraColour(), current color is {auroraColour}", ComplexLogger.FlaggedLoggingLevel.Verbose);
             }
         }
     }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AuroraMonitor.Utilities.Aurora
+﻿namespace AuroraMonitor.Utilities.Aurora
 {
     public class AuroraUtilities
     {
@@ -13,7 +7,7 @@ namespace AuroraMonitor.Utilities.Aurora
 		/// </summary>
 		internal static void FetchAuroraTime()
         {
-            Logging.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}");
+            Main.Logger.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}", FlaggedLoggingLevel.None);
         }
 
         /// <summary>
@@ -22,7 +16,7 @@ namespace AuroraMonitor.Utilities.Aurora
         internal static void FetchAuroraColour()
         {
             Color AuroraColor = GameManager.GetAuroraManager().GetAuroraColour();
-            Logging.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}");
+            Main.Logger.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}", FlaggedLoggingLevel.None);
         }
 
 		public static void SetAuroraChancesEarly(Weather weather, int early )

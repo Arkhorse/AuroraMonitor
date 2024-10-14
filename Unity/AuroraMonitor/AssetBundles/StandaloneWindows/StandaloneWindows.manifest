@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 3011241944
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: auroramonitor_firstaidpanel
+      Dependencies: {}

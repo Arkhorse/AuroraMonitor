@@ -10,6 +10,7 @@
 
 [assembly: AssemblyVersion(BuildInfo.Version)]
 [assembly: AssemblyFileVersion(BuildInfo.Version)]
+//[assembly: AssemblyInformationalVersion(BuildInfo.RevisionString)]
 
 [assembly: MelonInfo(typeof(AuroraMonitor.Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author, BuildInfo.DownloadLink)]
 [assembly: MelonGame("Hinterland", "TheLongDark")]

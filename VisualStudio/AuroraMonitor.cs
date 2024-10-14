@@ -20,6 +20,7 @@ namespace AuroraMonitor
 		public static string MonitorFolder { get; } = Path.Combine(MelonEnvironment.ModsDirectory, "Monitor");
 		public static string MonitorMainConfig { get; } = Path.Combine(MonitorFolder, "main.json");
 		public static string MonitorConfig { get; } = Path.Combine(MonitorFolder, "config.json");
+		public static string WeatherTrackingFile { get; } = Path.Combine(MonitorFolder, "WeatherDataTracking.json");
 		public static string Progressbar_AddonsBundlePath { get; } = "AuroraMonitor.Resources.progressbar";
 
 		public static int GridCellHeight { get; } = 33;
@@ -37,7 +38,7 @@ namespace AuroraMonitor
 		
 		#endregion
 		#region Weather Icons
-		internal List<string> WeatherIconNames =
+		internal static List<string> WeatherIconNames =
 		[
 			"DenseFog",
 			"LightSnow",
@@ -58,23 +59,16 @@ namespace AuroraMonitor
 
 		//public static List<WeatherAPI> RegisteredWeatherAPIs { get; } = new();
 
-		public override void OnInitializeMelon()
+		public async override void OnInitializeMelon()
 		{
-			Setup.Init();
-
-			ModSettings.Settings.OnLoad();
-			ConsoleCommands.RegisterCommands();
-
-			WeatherIcons = new();
-			foreach (string file in WeatherIconNames)
+			if (await Setup.Init())
 			{
-				Texture2D? texture = ImageUtilities.GetPNG("Monitor//Textures", file);
-				if (texture != null)
-				{
-					texture.name = file;
-					var _ = new TextureDefinition() { Name = file, Texture = texture };
-					WeatherIcons.Add(_);
-				}
+				ModSettings.Settings.OnLoad();
+				ConsoleCommands.RegisterCommands();
+			}
+			else
+			{
+				Logger.Log($"Attempting to setup mod failed", FlaggedLoggingLevel.Critical);
 			}
 		}
 

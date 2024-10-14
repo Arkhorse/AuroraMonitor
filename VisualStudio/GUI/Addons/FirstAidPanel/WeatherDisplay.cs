@@ -274,7 +274,7 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 			};
 
 			Main.WeatherDataTracking.Weather.Add(GameManager.GetTimeOfDayComponent().GetDayNumber().ToString(), index);
-			JsonFile.Save<WeatherDataTracking>(Path.Combine(Main.MonitorFolder, "WeatherDataTracking.json"), Main.WeatherDataTracking);
+			JsonFile.Save<WeatherDataTracking>(Main.WeatherTrackingFile, Main.WeatherDataTracking);
 		}
 	}
 }

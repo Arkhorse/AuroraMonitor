@@ -73,7 +73,7 @@ namespace AuroraMonitor.Utilities.JSON
 		/// <param name="createFile">Create the file if it doesnt exist</param>
 		/// <returns>An instance of <typeparamref name="T"/> with the data desearalized from the JSON file</returns>
 		/// <exception cref="BadMemeException"></exception>
-		public static T Load<T>(string configFileName)
+		public static T? Load<T>(string configFileName)
 		{
 			return Load<T>(configFileName, false, GetDefaultOptions());
 		}
@@ -86,7 +86,7 @@ namespace AuroraMonitor.Utilities.JSON
 		/// <param name="createFile">Create the file if it doesnt exist</param>
 		/// <returns>An instance of <typeparamref name="T"/> with the data desearalized from the JSON file</returns>
 		/// <exception cref="BadMemeException"></exception>
-		public static T Load<T>(string configFileName, bool createFile)
+		public static T? Load<T>(string configFileName, bool createFile)
 		{
 			return Load<T>(configFileName, createFile, GetDefaultOptions());
 		}
@@ -100,14 +100,13 @@ namespace AuroraMonitor.Utilities.JSON
 		/// <param name="options">OPTIONAL: Options to use when saving the file. You MUST use the same options to save the file</param>
 		/// <returns>An instance of <typeparamref name="T"/> with the data desearalized from the JSON file</returns>
 		/// <exception cref="BadMemeException"></exception>
-		public static T Load<T>(string configFileName, bool createFile = false, JsonSerializerOptions? options = null)
+		public static T? Load<T>(string configFileName, bool createFile = false, JsonSerializerOptions? options = null)
 		{
 			if (!File.Exists(configFileName))
 			{
 				if (createFile)
 				{
-					var instance = (T)Activator.CreateInstance(typeof(T));
-					Save<T>(configFileName, instance, options);
+					Save<T>(configFileName, default, options);
 				}
 				else
 				{
@@ -137,7 +136,7 @@ namespace AuroraMonitor.Utilities.JSON
 		/// <param name="createFile">Create the file if it doesnt exist</param>
 		/// <returns>An instance of <typeparamref name="T"/> with the data desearalized from the JSON file</returns>
 		/// <exception cref="BadMemeException"></exception>
-		public static async Task<T> LoadAsync<T>(string configFileName, bool createFile = false)
+		public static async Task<T?> LoadAsync<T>(string configFileName, bool createFile = false)
 		{
 			return await LoadAsync<T>(configFileName, createFile, GetDefaultOptions());
 		}
@@ -150,7 +149,7 @@ namespace AuroraMonitor.Utilities.JSON
 		/// <param name="options">OPTIONAL: Options to use when saving the file. You MUST use the same options to save the file</param>
 		/// <returns>An instance of <typeparamref name="T"/> with the data desearalized from the JSON file</returns>
 		/// <exception cref="BadMemeException"></exception>
-		public static async Task<T> LoadAsync<T>(string configFileName, bool createFile = false, JsonSerializerOptions? options = null)
+		public static async Task<T?> LoadAsync<T>(string configFileName, bool createFile = false, JsonSerializerOptions? options = null)
 		{
 			return await Task.Run(() => Load<T>(configFileName, createFile, options));
 		}

@@ -5,17 +5,14 @@
 	/// </summary>
 	public class Setup
 	{
-		public async static Task<bool> Init()
+		public static bool Init()
 		{
 			if (SetupInstancedClasses())
 			{
-			 	if (await SetupConfigurationData())
+			 	if (SetupConfigurationData())
 				{
-					if (LoadAssets())
-					{
-						Main.Logger.Log($"Init Completed", FlaggedLoggingLevel.Debug);
-						return true;
-					}
+					Main.Logger.Log($"Init Completed", FlaggedLoggingLevel.Debug);
+					return true;
 				}
 				else
 				{
@@ -38,17 +35,15 @@
 			return true;
 		}
 
-		private static async Task<bool> SetupConfigurationData()
+		private static bool SetupConfigurationData()
 		{
 			if (SetupFolders())
 			{
-				if (await LoadAllFiles())
+				LoadAllFiles();
+				if (Main.MonitorData != null && Main.Config != null && Main.WeatherDataTracking != null)
 				{
-					if (Main.MonitorData != null && Main.Config != null && Main.WeatherDataTracking != null)
-					{
-						Main.Logger.Log("All configs successfully loaded", FlaggedLoggingLevel.Verbose);
-						return true;
-					}
+					Main.Logger.Log("All configs successfully loaded", FlaggedLoggingLevel.Verbose);
+					return true;
 				}
 			}
 
@@ -56,16 +51,14 @@
 			return false;
 		}
 
-		private async static Task<bool> LoadAllFiles()
+		private async static void LoadAllFiles()
 		{
 			Main.MonitorData			= await JsonFile.LoadAsync<WeatherMonitorData>(Main.MonitorMainConfig, true);
 			Main.Config					= await JsonFile.LoadAsync<MainConfig>(Main.MonitorConfig, true);
 			Main.WeatherDataTracking	= await JsonFile.LoadAsync<WeatherDataTracking>(Main.WeatherTrackingFile, true);
-
-			return true;
 		}
 
-		private static bool LoadAssets()
+		internal static bool LoadAssets()
 		{
 			foreach (string file in Main.WeatherIconNames)
 			{

@@ -59,12 +59,13 @@ namespace AuroraMonitor
 
 		//public static List<WeatherAPI> RegisteredWeatherAPIs { get; } = new();
 
-		public async override void OnInitializeMelon()
+		public override void OnInitializeMelon()
 		{
-			if (await Setup.Init())
+			if (Setup.Init())
 			{
 				ModSettings.Settings.OnLoad();
 				ConsoleCommands.RegisterCommands();
+				Setup.LoadAssets();
 			}
 			else
 			{

@@ -78,12 +78,12 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 				if (AuroraGroup == null) Main.Logger.Log("AuroraGroup is null", FlaggedLoggingLevel.Debug);
 				if (WeatherGroup == null) Main.Logger.Log("WeatherGroup is null", FlaggedLoggingLevel.Debug);
 				if (WindGroup == null) Main.Logger.Log("WindGroup is null", FlaggedLoggingLevel.Debug);
+				//WeatherDataTracker();
 			}
 			else
 			{
 				Main.Logger.Log("AuroraMonitor_FirstAidPanel is null", FlaggedLoggingLevel.Critical);
 			}
-			WeatherDataTracker();
 		}
 
 		public void Update()
@@ -101,11 +101,11 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 			WindGroupController(!GameManager.GetWeatherComponent().IsIndoorEnvironment() && !GameManager.GetWeatherComponent().IsIndoorScene());
 			WeatherIconController();
 		}
-		public void OnDestroy()
-		{
-			WeatherSetData.OnWeatherStageChanged -= SetWeatherStageAction;
-			SetWeatherStageAction -= OnWeatherChange;
-		}
+		//public void OnDestroy()
+		//{
+		//	WeatherSetData.OnWeatherStageChanged -= SetWeatherStageAction;
+		//	SetWeatherStageAction -= OnWeatherChange;
+		//}
 
 		#region Group Controllers
 		public void AuroraGroupController(bool enable)
@@ -253,12 +253,19 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 			return (int)Mathf.Ceil(GetCurrentUnits(input));
 		}
 
-		public static Action<WeatherSetStage> SetWeatherStageAction;
-		public static void WeatherDataTracker()
-		{
-			WeatherSetData.OnWeatherStageChanged += SetWeatherStageAction;
-			SetWeatherStageAction += OnWeatherChange;
-		}
+		//public static Action<WeatherSetStage> SetWeatherStageAction;
+		//public static void WeatherDataTracker()
+		//{
+		//	try
+		//	{
+		//		Il2CppTLD.Events.WeatherStageChangeEvent.ad
+		//		SetWeatherStageAction += OnWeatherChange;
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		Main.Logger.Log($"Attempting to subscribe failed", FlaggedLoggingLevel.Exception, e);
+		//	}
+		//}
 		public static void OnWeatherChange(WeatherSetStage weatherSetStage)
 		{
 			if (Main.WeatherDataTracking == null) return;

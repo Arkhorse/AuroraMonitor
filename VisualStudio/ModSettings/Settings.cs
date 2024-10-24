@@ -182,6 +182,8 @@ namespace AuroraMonitor.ModSettings
 		{
 			Main.SettingsInstance.AddToModSettings(BuildInfo.GUIName);
 			Main.SettingsInstance.RefreshGUI();
+
+			Main.SettingsInstance.SetFieldVisible(nameof(Main.SettingsInstance.UnlockRadio), false);
 		}
 	}
 }

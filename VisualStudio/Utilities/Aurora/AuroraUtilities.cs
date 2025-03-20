@@ -7,7 +7,7 @@
 		/// </summary>
 		internal static void FetchAuroraTime()
         {
-            Main.Logger.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}", FlaggedLoggingLevel.None);
+            Main.Logger.Log($"Aurora Time Left: {GameManager.GetAuroraManager().GetNormalizedAlpha()}", FlaggedLoggingLevel.Always);
         }
 
         /// <summary>
@@ -16,7 +16,7 @@
         internal static void FetchAuroraColour()
         {
             Color AuroraColor = GameManager.GetAuroraManager().GetAuroraColour();
-            Main.Logger.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}", FlaggedLoggingLevel.None);
+            Main.Logger.Log($"Aurora Color: R:{AuroraColor.r} G:{AuroraColor.g} B:{AuroraColor.b} A:{AuroraColor.a}", FlaggedLoggingLevel.Always);
         }
 
 		public static void SetAuroraChancesEarly(Weather weather, int early )

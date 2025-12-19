@@ -18,7 +18,7 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 		public WeatherDisplay() { }
 		public WeatherDisplay(IntPtr pointer) : base(pointer) { }
 
-		public AssetBundle Bundle;
+		public Il2CppAssetBundle Bundle;
 
 		public GameObject AuroraMonitor_FirstAidPanel;
 		public GameObject Panel;
@@ -88,6 +88,8 @@ namespace AuroraMonitor.GUI.Addons.FirstAidPanel
 
 		public void Update()
 		{
+			if (Bundle == null) return;
+			if (AuroraMonitor_FirstAidPanel == null) return;
 			if (!Main.SettingsInstance.WeatherDisplayEnable)
 			{
 				AuroraMonitor_FirstAidPanel.active = false;

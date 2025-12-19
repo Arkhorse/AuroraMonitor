@@ -73,13 +73,14 @@ namespace AuroraMonitor
 			}
 		}
 
-		public static AssetBundle LoadAssetBundle(string name)
+		public static Il2CppAssetBundle LoadAssetBundle(string name)
 		{
+			
 			using (Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name))
 			{
 				MemoryStream? memory = new((int)stream.Length);
 				stream!.CopyTo(memory);
-				return AssetBundle.LoadFromMemory(memory.ToArray());
+				return Il2CppAssetBundleManager.LoadFromMemory(memory.ToArray());
 			};
 		}
 

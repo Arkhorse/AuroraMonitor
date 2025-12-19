@@ -1,21 +1,31 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" encoding="UTF-8">
 
 	<!-- DO NOT CHANGE ANYTHING BETWEEN THESE (unless you know 100% what you are changing)-->
 	<!-- Further info: This defines critical project details, like the net version, C# language version, null enable and do not generate assembly info (we need a custom one) -->
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<LangVersion>Latest</LangVersion>
+		<LangVersion>12</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<DebugType>none</DebugType>
+		<DebugType>embedded</DebugType>
+		<Optimize>true</Optimize>
 	</PropertyGroup>
 	<!-- DO NOT CHANGE ANYTHING BETWEEN THESE -->
 
 	<PropertyGroup>
 		<!-- This should point to wherever your games primary EXE is -->
 		<TheLongDarkPath>O:\SteamLibrary\steamapps\common\TheLongDark</TheLongDarkPath>
-		<ReleaseFolderPath>P:\Modding\The Long Dark\MyMods\AuroraMonitor\Release</ReleaseFolderPath>
+		<ReleaseFolderPath>R:\Modding\The Long Dark\MyMods\AuroraMonitor\Release</ReleaseFolderPath>
+		<Mods>$(TheLongDarkPath)\Mods</Mods>
+		<Plugins>$(TheLongDarkPath)\Plugins</Plugins>
+		<UserData>$(TheLongDarkPath)\UserData</UserData>
+		<UserLibs>$(TheLongDarkPath)\UserLibs</UserLibs>
+		<!-- These paths are for various mod resources -->
+		<ModResources>R:\Modding\The Long Dark</ModResources>
+		<UPDATES>$(ModResources)\UPDATES</UPDATES>
+		<MyMods>$(ModResources)\MyMods</MyMods>
+		<Libraries>$(ModResources)\Libraries</Libraries>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,15 +35,18 @@
 	<!-- List of used references -->
 	<ItemGroup>
 		<!-- This is the base reference. MUST EXIST -->
-		<PackageReference Include="STBlade.Modding.TLD.Il2CppAssemblies.Windows" Version="2.30.0" />
+		<PackageReference Include="STBlade.Modding.TLD.Il2CppAssemblies.Windows" Version="*" />
 		<!-- This is only if you use the ModSettings -->
-		<PackageReference Include="STBlade.Modding.TLD.ModSettings" Version="1.9.0" />
+		<PackageReference Include="STBlade.Modding.TLD.ModSettings" Version="*" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<Reference Include="ComplexLogger">
-			<HintPath>..\..\..\Libraries\ComplexLogger.dll</HintPath>
+			<HintPath>$(Libraries)\ComplexLogger.dll</HintPath>
 			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.Il2CppAssetBundleManager">
+		  <HintPath>O:\SteamLibrary\steamapps\common\TheLongDark\MelonLoader\net6\UnityEngine.Il2CppAssetBundleManager.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
@@ -47,7 +60,7 @@
 		<Using Include="UnityEngine" />
 		<!-- Only if your using ModSettings -->
 		<Using Include="ModSettings" />
-		<!-- Only if your using ModComponent -->
+		<Using Include="ComplexLogger" />
 	</ItemGroup>
 
 	<!-- This is a build event. It will copy your dll to the currently defined TheLongDarkPath's Mods folder -->
